@@ -7,7 +7,7 @@ import {darkGreen} from '../styles/Constants';
 import Field from '../components/Field';
 import Btn from '../components/Btn';
 
-export default function Signup(props) {
+export default function Register(props) {
   return (
     <Background>
       <View style={{alignItems: 'center', width: '100%'}}>
@@ -40,7 +40,7 @@ export default function Signup(props) {
           }}>
           <Field placeholder="First Name" />
           <Field placeholder="Last Name" />
-          <Field placeholder="Contact Number" keyboardType={'number'} />
+          <Field placeholder="Serial" keyboardType={'number'} />
           <Field placeholder="Email" keyboardType={'email-address'} />
           <Field placeholder="Password" secureTextEntry={true} />
           <Field placeholder="Confirm Password" secureTextEntry={true} />

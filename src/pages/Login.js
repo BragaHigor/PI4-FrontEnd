@@ -46,10 +46,7 @@ export default function Login(props) {
             }}>
             Login to yout account
           </Text>
-          <Field
-            placeholder="Email / Username"
-            keyboardType={'email-address'}
-          />
+          <Field placeholder="Email" keyboardType={'email-address'} />
           <Field placeholder="Password" secureTextEntry={true} />
           <View
             style={{
