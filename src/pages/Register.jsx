@@ -7,7 +7,7 @@ import {darkGreen} from '../styles/Constants';
 import Field from '../components/Field';
 import Btn from '../components/Btn';
 
-export default function Login(props) {
+export default function Register(props) {
   return (
     <Background>
       <View style={{alignItems: 'center', width: '100%'}}>
@@ -16,9 +16,18 @@ export default function Login(props) {
             color: 'white',
             fontSize: 64,
             fontWeight: 'bold',
-            marginVertical: 10,
+            marginTop: 20,
           }}>
-          Login
+          Register
+        </Text>
+        <Text
+          style={{
+            color: 'white',
+            fontSize: 19,
+            fontWeight: 'bold',
+            marginBottom: 20,
+          }}>
+          Create a new account
         </Text>
         <View
           style={{
@@ -26,44 +35,23 @@ export default function Login(props) {
             height: 700,
             width: 400,
             borderTopLeftRadius: 130,
-            paddingTop: 100,
+            paddingTop: 50,
             alignItems: 'center',
           }}>
-          <Text
-            style={{
-              fontSize: 40,
-              color: darkGreen,
-              fontWeight: 'bold',
-            }}>
-            Welcome Back
-          </Text>
-          <Text
-            style={{
-              color: 'grey',
-              fontSize: 19,
-              fontWeight: 'bold',
-              marginBottom: 20,
-            }}>
-            Login to yout account
-          </Text>
-          <Field placeholder="Email" keyboardType={'email-address'} />
+          <Field placeholder="First Name" />
+          <Field placeholder="Last Name" />
+          <Field placeholder="Serial" />
+          <Field placeholder="Email" />
           <Field placeholder="Password" secureTextEntry={true} />
-          <View
-            style={{
-              alignItems: 'flex-end',
-              width: '78%',
-              paddingRight: 16,
-              marginBottom: 180,
-            }}>
-            <Text style={{color: darkGreen, fontWeight: 'bold', fontSize: 16}}>
-              Forgot Password ?
-            </Text>
-          </View>
+          <Field placeholder="Confirm Password" secureTextEntry={true} />
           <Btn
             textColor="white"
             bgColor={darkGreen}
-            btnLabel="Login"
-            Press={() => alert('Logged In')}
+            btnLabel="Signup"
+            Press={() => {
+              alert('Account created');
+              props.navigation.navigate('Login');
+            }}
           />
           <View
             style={{
@@ -72,13 +60,13 @@ export default function Login(props) {
               justifyContent: 'center',
             }}>
             <Text style={{fontWeight: 'bold', fontSize: 16}}>
-              Don't have an account ?{' '}
+              Already have an account ?{' '}
             </Text>
             <TouchableOpacity
-              onPress={() => props.navigation.navigate('Signup')}>
+              onPress={() => props.navigation.navigate('Login')}>
               <Text
                 style={{color: darkGreen, fontWeight: 'bold', fontSize: 16}}>
-                Signup
+                Login
               </Text>
             </TouchableOpacity>
           </View>

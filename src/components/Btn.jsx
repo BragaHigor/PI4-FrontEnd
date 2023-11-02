@@ -1,5 +1,5 @@
 /* eslint-disable react-native/no-inline-styles */
-import {View, TouchableOpacity, Text} from 'react-native';
+import {TouchableOpacity, Text} from 'react-native';
 import React from 'react';
 
 export default function Btn({bgColor, btnLabel, textColor, Press}) {

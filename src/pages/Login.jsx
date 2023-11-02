@@ -7,7 +7,7 @@ import {darkGreen} from '../styles/Constants';
 import Field from '../components/Field';
 import Btn from '../components/Btn';
 
-export default function Register(props) {
+export default function Login(props) {
   return (
     <Background>
       <View style={{alignItems: 'center', width: '100%'}}>
@@ -16,18 +16,9 @@ export default function Register(props) {
             color: 'white',
             fontSize: 64,
             fontWeight: 'bold',
-            marginTop: 20,
+            marginVertical: 10,
           }}>
-          Register
-        </Text>
-        <Text
-          style={{
-            color: 'white',
-            fontSize: 19,
-            fontWeight: 'bold',
-            marginBottom: 20,
-          }}>
-          Create a new account
+          Login
         </Text>
         <View
           style={{
@@ -35,22 +26,46 @@ export default function Register(props) {
             height: 700,
             width: 400,
             borderTopLeftRadius: 130,
-            paddingTop: 50,
+            paddingTop: 100,
             alignItems: 'center',
           }}>
-          <Field placeholder="First Name" />
-          <Field placeholder="Last Name" />
-          <Field placeholder="Serial" keyboardType={'number'} />
-          <Field placeholder="Email" keyboardType={'email-address'} />
+          <Text
+            style={{
+              fontSize: 40,
+              color: darkGreen,
+              fontWeight: 'bold',
+            }}>
+            Welcome Back
+          </Text>
+          <Text
+            style={{
+              color: 'grey',
+              fontSize: 19,
+              fontWeight: 'bold',
+              marginBottom: 20,
+            }}>
+            Login to yout account
+          </Text>
+          <Field placeholder="Email" />
           <Field placeholder="Password" secureTextEntry={true} />
-          <Field placeholder="Confirm Password" secureTextEntry={true} />
+          <View
+            style={{
+              alignItems: 'flex-end',
+              width: '78%',
+              paddingRight: 16,
+              marginBottom: 180,
+            }}>
+            <Text style={{color: darkGreen, fontWeight: 'bold', fontSize: 16}}>
+              Forgot Password ?
+            </Text>
+          </View>
           <Btn
             textColor="white"
             bgColor={darkGreen}
-            btnLabel="Signup"
+            btnLabel="Login"
             Press={() => {
               alert('Account created');
-              props.navigation.navigate('Login');
+              props.navigation.navigate('Dashboard');
             }}
           />
           <View
@@ -60,13 +75,13 @@ export default function Register(props) {
               justifyContent: 'center',
             }}>
             <Text style={{fontWeight: 'bold', fontSize: 16}}>
-              Already have an account ?{' '}
+              Don't have an account ?{' '}
             </Text>
             <TouchableOpacity
-              onPress={() => props.navigation.navigate('Login')}>
+              onPress={() => props.navigation.navigate('Register')}>
               <Text
                 style={{color: darkGreen, fontWeight: 'bold', fontSize: 16}}>
-                Login
+                Signup
               </Text>
             </TouchableOpacity>
           </View>
