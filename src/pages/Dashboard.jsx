@@ -94,7 +94,6 @@ export default function Dashboard(props) {
 const styles = StyleSheet.create({
   dashboard: {
     padding: theme.sizes.base * 2,
-    flex: 1,
   },
   button: {
     backgroundColor: theme.colors.button,

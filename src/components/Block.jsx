@@ -7,7 +7,7 @@ export default function Block(props) {
 
   const blockStyles = [
     styles.block,
-    flex && {flex: flex === 'disabled' ? 0 : flex},
+    flex && {flex: flex === 'disabled' ? 0 : Number(flex)},
     center && styles.center,
     middle && styles.middle,
     right && styles.right,
