@@ -10,7 +10,7 @@ const colors = {
 const sizes = {
   base: 14,
   font: 14,
-  welcome: 18,
+  welcome: 17,
   name: 21,
   h1: 140,
   button: 16,

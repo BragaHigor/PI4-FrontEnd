@@ -1,4 +1,3 @@
-/* eslint-disable no-alert */
 /* eslint-disable react-native/no-inline-styles */
 import {View, Text, TouchableOpacity} from 'react-native';
 import React from 'react';
@@ -64,7 +63,6 @@ export default function Login(props) {
             bgColor={darkGreen}
             btnLabel="Login"
             Press={() => {
-              alert('Account created');
               props.navigation.navigate('Dashboard');
             }}
           />
