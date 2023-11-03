@@ -171,7 +171,7 @@ export default function InteractiveChart() {
             fontSize={apx(24)}
             fontWeight="bold"
             fill="rgba(224, 188, 136, 1)">
-            ${priceList[positionX]}
+            {priceList[positionX]}°C
           </SvgText>
         </G>
 

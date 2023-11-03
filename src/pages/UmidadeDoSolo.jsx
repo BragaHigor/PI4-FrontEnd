@@ -31,7 +31,7 @@ export default function UmidadeDoSolo() {
 
         <Block row space="around">
           <Block center middle style={styles.statistics}>
-            <Text welcome>Desvio Padrã</Text>
+            <Text welcome>Desvio Padrão</Text>
             <Text name>1.80</Text>
           </Block>
 
