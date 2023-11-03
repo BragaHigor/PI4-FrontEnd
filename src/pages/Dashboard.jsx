@@ -32,7 +32,7 @@ export default function Dashboard(props) {
           <Block flex={1.5} row style={{alignItems: 'flex-end'}}>
             <Text h1>34</Text>
             <Text h1 size={34} height={80} weight={'600'} spacing={0.1}>
-              °C
+              %
             </Text>
           </Block>
 
