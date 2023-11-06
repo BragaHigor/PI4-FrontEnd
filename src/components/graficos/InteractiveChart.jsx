@@ -25,21 +25,19 @@ import {
 import * as shape from 'd3-shape';
 import * as theme from '../../styles/theme';
 
-export default function InteractiveChart() {
+export default function InteractiveChart({xValue, yValue}) {
   const apx = (size = 0) => {
     let width = Dimensions.get('window').width;
-    return (width / 800) * size;
+    return (width / 780) * size;
   };
-
-  const [dateList, setDateList] = useState([
-    '08-31 15:09',
-    '08-31 15:10',
-    '08-31 15:11',
-    '08-31 15:12',
-    '08-31 15:13',
-  ]);
-  const [priceList, setPriceList] = useState([25, 30, 15, 55, 18]);
+  const [dateList, setDateList] = useState(xValue);
+  const [priceList, setPriceList] = useState(yValue);
   const size = useRef(dateList.length);
+
+  useEffect(() => {
+    setDateList(xValue);
+    setPriceList(yValue);
+  }, [xValue, yValue]);
 
   const [positionX, setPositionX] = useState(-1); // The currently selected X coordinate position
 
@@ -126,7 +124,7 @@ export default function InteractiveChart() {
       key="line"
       d={line}
       stroke={theme.colors.accent}
-      strokeWidth={apx(6)}
+      strokeWidth={apx(7)}
       fill="none"
     />
   );
@@ -230,7 +228,7 @@ export default function InteractiveChart() {
           style={{width: apx(130)}}
           data={priceList}
           contentInset={verticalContentInset}
-          svg={{fontSize: apx(20), fill: '#617485'}}
+          svg={{fontSize: apx(25), fill: '#617485'}}
         />
       </View>
       <XAxis
@@ -248,7 +246,7 @@ export default function InteractiveChart() {
           right: apx(130),
         }}
         svg={{
-          fontSize: apx(20),
+          fontSize: apx(25),
           fill: '#617485',
           y: apx(20),
           // originY: 30,
