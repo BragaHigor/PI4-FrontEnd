@@ -13,7 +13,7 @@ export default function UmidadeDoSolo() {
   const [dados, setDados] = useState({
     Dias: {
       x: ['08-10', '08-11', '08-12', '08-13', '08-14'],
-      y: [40, 30, 15, 70, 70],
+      y: [75, 40, 25, 90, 15],
     },
     Horas: {
       x: ['08-10', '08-11', '08-12', '08-13', '08-14'],
