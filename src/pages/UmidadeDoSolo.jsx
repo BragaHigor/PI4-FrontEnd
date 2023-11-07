@@ -1,5 +1,4 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 import {ScrollView, StyleSheet, TouchableOpacity} from 'react-native';
 import * as theme from '../styles/theme';
 import {Block, Text} from '../components';
@@ -23,11 +22,6 @@ export default function UmidadeDoSolo() {
 
   const dateList = dados[selectedOption].x;
   const priceList = dados[selectedOption].y;
-
-  useEffect(() => {
-    console.log('selectedOption:', selectedOption);
-    console.log(dateList, priceList);
-  }, [selectedOption]);
 
   function handleOptionChange(option) {
     setSelectedOption(option);
