@@ -73,7 +73,7 @@ export default function Dashboard(props) {
 
   const array1 = Array.from({length: 11}, () => Math.floor(Math.random() * 90));
   const array2 = Array.from({length: 11}, () => Math.floor(Math.random() * 90));
-  const array = Array.from({length: 11}, () => Math.floor(Math.random() * 90));
+  const array5 = Array.from({length: 11}, () => Math.floor(Math.random() * 90));
 
   return (
     <>
@@ -114,7 +114,7 @@ export default function Dashboard(props) {
         <Dash
           value={15}
           unidade={'°C'}
-          arrayDados={array}
+          arrayDados={array5}
           mock={mocks.temperatura.name}
           rota={navigation}
           screenName="Temperatura"
