@@ -77,7 +77,7 @@ export default function UmidadeDoAr() {
           <Block row space="around">
             <Block style={styles.titulo}>
               <Text name>{mocks.ar.name}</Text>
-              <Text welcome>Dos últimos 7 dias</Text>
+              <Text welcome>Dos últimos 5 dias</Text>
             </Block>
             {selectDia()}
           </Block>
@@ -123,7 +123,7 @@ export default function UmidadeDoAr() {
           <Block row space="around">
             <Block style={styles.titulo}>
               <Text name>{mocks.ar.name}</Text>
-              <Text welcome>Das últimas 7 horas</Text>
+              <Text welcome>Das últimas 5 horas</Text>
             </Block>
             {selectHora()}
           </Block>
