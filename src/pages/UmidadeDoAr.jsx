@@ -8,15 +8,18 @@ import Dados from '../components/Estatistica';
 import InteractiveChart from '../components/graficos/InteractiveChart';
 
 export default function UmidadeDoAr() {
+  const array = Array.from({length: 5}, () => Math.floor(Math.random() * 90));
+  const array1 = Array.from({length: 5}, () => Math.floor(Math.random() * 90));
+
   const [selectedOption, setSelectedOption] = useState('Dias');
   const [dados, setDados] = useState({
     Dias: {
       x: ['08-10', '08-11', '08-12', '08-13', '08-14'],
-      y: [75, 40, 25, 90, 15],
+      y: array,
     },
     Horas: {
       x: ['08-10', '08-11', '08-12', '08-13', '08-14'],
-      y: [10, 14, 40, 10, 55],
+      y: array1,
     },
   });
 
