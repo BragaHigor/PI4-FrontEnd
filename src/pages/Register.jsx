@@ -1,13 +1,74 @@
 /* eslint-disable no-alert */
 /* eslint-disable react-native/no-inline-styles */
 import {View, Text, TouchableOpacity} from 'react-native';
-import React from 'react';
+import React, {useState} from 'react';
 import Background from '../components/Background';
 import {darkGreen} from '../styles/Constants';
 import Field from '../components/Field';
 import Btn from '../components/Btn';
+import http from '../db/http';
 
 export default function Register(props) {
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [serial, setSerial] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+
+  const limparInput = () => {
+    setConfirmPassword('');
+    setEmail('');
+    setFirstName('');
+    setLastName('');
+    setPassword('');
+    setSerial('');
+  };
+
+  const handleSignup = async () => {
+    if (
+      !firstName ||
+      !lastName ||
+      !serial ||
+      !email ||
+      !password ||
+      !confirmPassword
+    ) {
+      alert('Preencha todos os campos');
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      alert('As senhas precisam ser iguais');
+      return;
+    }
+
+    try {
+      const newUser = {
+        name: `${firstName} ${lastName}`,
+        email,
+        password,
+      };
+
+      const response = await http.post('/user', newUser);
+
+      console.log('DADOS USUARIO', response);
+
+      if (response.status === 201) {
+        // Usuário foi criado com sucesso
+        alert('Account created');
+        limparInput();
+        props.navigation.navigate('Login');
+      } else {
+        // Lidar com erros aqui, por exemplo, usuário já existe, problemas de validação, etc.
+        alert('Error: ' + response.data.message); // Exibir a mensagem de erro do servidor
+      }
+    } catch (error) {
+      console.error('Erro ao criar usuário:', error);
+      alert('Ocorreu um erro ao criar a conta. Tente novamente mais tarde.');
+    }
+  };
+
   return (
     <Background>
       <View style={{alignItems: 'center', width: '100%'}}>
@@ -38,19 +99,44 @@ export default function Register(props) {
             paddingTop: 50,
             alignItems: 'center',
           }}>
-          <Field placeholder="First Name" />
-          <Field placeholder="Last Name" />
-          <Field placeholder="Serial" />
-          <Field placeholder="Email" />
-          <Field placeholder="Password" secureTextEntry={true} />
-          <Field placeholder="Confirm Password" secureTextEntry={true} />
+          <Field
+            placeholder="First Name"
+            value={firstName}
+            onChangeText={text => setFirstName(text)}
+          />
+          <Field
+            placeholder="Last Name"
+            value={lastName}
+            onChangeText={text => setLastName(text)}
+          />
+          <Field
+            placeholder="Serial"
+            value={serial}
+            onChangeText={text => setSerial(text)}
+          />
+          <Field
+            placeholder="Email"
+            value={email}
+            onChangeText={text => setEmail(text)}
+          />
+          <Field
+            placeholder="Password"
+            value={password}
+            secureTextEntry={true}
+            onChangeText={text => setPassword(text)}
+          />
+          <Field
+            placeholder="Confirm Password"
+            value={confirmPassword}
+            secureTextEntry={true}
+            onChangeText={text => setConfirmPassword(text)}
+          />
           <Btn
             textColor="white"
             bgColor={darkGreen}
             btnLabel="Signup"
             Press={() => {
-              alert('Account created');
-              props.navigation.navigate('Login');
+              handleSignup();
             }}
           />
           <View
