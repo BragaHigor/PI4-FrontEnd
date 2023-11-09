@@ -1,6 +1,6 @@
 /* eslint-disable react/no-unstable-nested-components */
 /* eslint-disable react-native/no-inline-styles */
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   ScrollView,
   StyleSheet,
@@ -17,10 +17,65 @@ import mocks from '../interface/settings';
 import Dash from '../components/Dash';
 import Icon from '../assets/img/user-30.png';
 import Close from '../assets/img/X.png';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import http from '../db/http';
 export default function Dashboard(props) {
   const {navigation} = props;
 
   const [isModalVisible, setModalVisible] = useState(false);
+  const [nomeCliente, setNomeCliente] = useState('');
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const token = await AsyncStorage.getItem('token_API');
+        console.log('Token:', token);
+
+        if (token) {
+          const response = await http.get('/user', {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+
+          const data = response.data;
+          setNomeCliente(data.response.name);
+        }
+      } catch (error) {
+        console.error('Erro ao obter os dados do cliente:', error);
+        console.error(
+          'Erro ao obter os dados do cliente:',
+          error.response ? error.response.data : error.message,
+        );
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       const token = await AsyncStorage.getItem('token_API');
+  //       console.log('Token:', token);
+
+  //       if (token) {
+  //         const response = await http.get('/user', {});
+
+  //         const data = response.data;
+  //         setNomeCliente(data.response.name);
+  //       }
+  //     } catch (error) {
+  //       console.error('Erro ao obter os dados do cliente:', error);
+  //       console.error(
+  //         'Erro ao obter os dados do cliente:',
+  //         error.response ? error.response.data : error.message,
+  //       );
+  //     }
+  //   };
+
+  //   fetchData();
+  // }, []);
 
   const openModal = () => {
     setModalVisible(true);
@@ -83,7 +138,7 @@ export default function Dashboard(props) {
           <Block row space="around">
             <Block>
               <Text welcome>Bem-Vindo</Text>
-              <Text name>Higor Braga</Text>
+              <Text name>{nomeCliente}</Text>
             </Block>
             <TouchableOpacity activeOpacity={0.8} onPress={openModal}>
               <Image source={Icon} />
