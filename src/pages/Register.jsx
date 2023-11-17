@@ -45,12 +45,12 @@ export default function Register(props) {
 
     try {
       const newUser = {
-        name: `${firstName} ${lastName}`,
+        name: `${firstName}`,
         email,
         password,
       };
 
-      const response = await http.post('/user', newUser);
+      const response = await http.post('/users', newUser);
 
       console.log('DADOS USUARIO', response);
 

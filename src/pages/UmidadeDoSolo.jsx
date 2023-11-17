@@ -7,6 +7,9 @@ import Dados from '../components/Estatistica';
 
 import InteractiveChart from '../components/graficos/InteractiveChart';
 
+arrayDia[]
+arrayValue[]
+
 export default function UmidadeDoSolo() {
   const [selectedOption, setSelectedOption] = useState('Dias');
   const [dados, setDados] = useState({

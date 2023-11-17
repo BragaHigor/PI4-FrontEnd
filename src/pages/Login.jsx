@@ -20,19 +20,14 @@ export default function Login(props) {
     }
 
     try {
-      const response = await http.post('/user/auth', {
+      const response = await http.post('/users/auth', {
         email: email,
         password: password,
       });
       const token = response.data.token;
-
-      console.log('Token', token);
       console.log(response);
 
       await AsyncStorage.setItem('token_API', token);
-
-      http.defaults.headers.common.Authorization = `Bearer ${response.data.token}`;
-
       props.navigation.navigate('Dashboard');
     } catch (error) {
       console.error('Login failed', error);

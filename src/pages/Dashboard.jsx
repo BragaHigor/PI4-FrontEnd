@@ -29,17 +29,14 @@ export default function Dashboard(props) {
     const fetchData = async () => {
       try {
         const token = await AsyncStorage.getItem('token_API');
-        console.log('Token:', token);
+        console.log('Dash Token:', token);
 
         if (token) {
-          const response = await http.get('/user', {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          });
+          const response = await http.get('/users');
 
           const data = response.data;
-          setNomeCliente(data.response.name);
+          console.log(response);
+          setNomeCliente(data[0].name);
         }
       } catch (error) {
         console.error('Erro ao obter os dados do cliente:', error);
@@ -52,30 +49,6 @@ export default function Dashboard(props) {
 
     fetchData();
   }, []);
-
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     try {
-  //       const token = await AsyncStorage.getItem('token_API');
-  //       console.log('Token:', token);
-
-  //       if (token) {
-  //         const response = await http.get('/user', {});
-
-  //         const data = response.data;
-  //         setNomeCliente(data.response.name);
-  //       }
-  //     } catch (error) {
-  //       console.error('Erro ao obter os dados do cliente:', error);
-  //       console.error(
-  //         'Erro ao obter os dados do cliente:',
-  //         error.response ? error.response.data : error.message,
-  //       );
-  //     }
-  //   };
-
-  //   fetchData();
-  // }, []);
 
   const openModal = () => {
     setModalVisible(true);
