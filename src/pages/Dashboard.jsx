@@ -29,7 +29,7 @@ export default function Dashboard(props) {
     const fetchData = async () => {
       try {
         const token = await AsyncStorage.getItem('token_API');
-        console.log('Dash Token:', token);
+        // console.log('Dash Token:', token);
 
         if (token) {
           const response = await http.get('/users');
