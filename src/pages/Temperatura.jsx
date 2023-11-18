@@ -1,27 +1,94 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {ScrollView, StyleSheet, TouchableOpacity} from 'react-native';
 import * as theme from '../styles/theme';
 import {Block, Text} from '../components';
 import mocks from '../interface/settings';
 import Dados from '../components/Estatistica';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import http from '../db/http';
+import moment from 'moment';
 
 import InteractiveChart from '../components/graficos/InteractiveChart';
 
 export default function Temperatura() {
   const [selectedOption, setSelectedOption] = useState('Dias');
-  const [dados, setDados] = useState({
-    Dias: {
-      x: ['08-10', '08-11', '08-12', '08-13', '08-14'],
-      y: [75, 40, 25, 90, 15],
-    },
-    Horas: {
-      x: ['08-10', '08-11', '08-12', '08-13', '08-14'],
-      y: [10, 14, 40, 10, 55],
-    },
-  });
+  const [dataEqp, setDataEqp] = useState(false);
+  const [dataInfos, setDataInfos] = useState(false);
+  const [serialNumber, setSerialNumber] = useState('');
 
-  const dateList = dados[selectedOption].x;
-  const priceList = dados[selectedOption].y;
+  const [dados, setDados] = useState({});
+
+  useEffect(() => {
+    const fetchEquipments = async () => {
+      try {
+        const token = await AsyncStorage.getItem('token_API');
+        // console.log('Dash Token:', token);
+
+        if (token) {
+          const serial = await http.get('/equipments');
+          const serialData = serial.data;
+          setSerialNumber(serialData[0].serialNumber);
+          setDataEqp(true);
+        }
+      } catch (error) {
+        console.error('Erro ao obter os dados do equipment:', error);
+        console.error(
+          'Erro ao obter os dados do equipment:',
+          error.response ? error.response.data : error.message,
+        );
+      }
+    };
+
+    fetchEquipments();
+  }, []);
+
+  useEffect(() => {
+    const fetchInfos = async () => {
+      try {
+        const token = await AsyncStorage.getItem('token_API');
+        // console.log('Dash Token:', token);
+
+        if (token && dataEqp) {
+          const response = await http.get('/infos', {
+            params: {
+              equipmentSerialNumber: serialNumber
+            }
+          });
+
+          const data = response.data.data;
+          console.log(data);
+          const newData = {
+            Dias: {
+              x: data.map(entry => moment(entry.date, "DD/MM/YYYY").format("DD-MM")), // Substitua 'date' pelo campo da data na sua API
+              y: data.map(entry => entry.temperature), // Substitua 'temperature' pelo campo de temperatura na sua API
+            },
+            Horas: {
+              x: data.map(entry => moment(entry.time, "HH:mm:ss").format("HH")), // Substitua 'date' pelo campo da data na sua API
+              y: data.map(entry => entry.temperature), // Substitua 'temperature' pelo campo de temperatura na sua API
+            },
+          };
+
+          setDados(newData);
+          console.log(dados);
+          setDataInfos(true);
+          
+        }
+        
+        
+      } catch (error) {
+        console.error('Erro ao obter os dados de infos:', error);
+        console.error(
+          'Erro ao obter os dados de infos:',
+          error.response ? error.response.data : error.message,
+        );
+      }
+    };
+
+    fetchInfos();
+  }, [dataEqp]);
+
+  const dateList = dados[selectedOption]?.x || [];
+  const value = dados[selectedOption]?.y || [];
 
   function handleOptionChange(option) {
     setSelectedOption(option);
@@ -78,7 +145,7 @@ export default function Temperatura() {
             </Block>
             {selectDia()}
           </Block>
-          <InteractiveChart xValue={dateList} yValue={priceList} />
+          <InteractiveChart xValue={dateList} yValue={value} />
         </Block>
 
         <Block flex column space="around">
@@ -124,7 +191,7 @@ export default function Temperatura() {
             </Block>
             {selectHora()}
           </Block>
-          <InteractiveChart xValue={dateList} yValue={priceList} />
+          <InteractiveChart xValue={dateList} yValue={value} />
         </Block>
         <Block flex column space="around">
           <Dados

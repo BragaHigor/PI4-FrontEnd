@@ -31,12 +31,12 @@ export default function InteractiveChart({xValue, yValue}) {
     return (width / 780) * size;
   };
   const [dateList, setDateList] = useState(xValue);
-  const [priceList, setPriceList] = useState(yValue);
+  const [value, setValue] = useState(yValue);
   const size = useRef(dateList.length);
 
   useEffect(() => {
     setDateList(xValue);
-    setPriceList(yValue);
+    setValue(yValue);
   }, [xValue, yValue]);
 
   const [positionX, setPositionX] = useState(-1); // The currently selected X coordinate position
@@ -105,7 +105,7 @@ export default function InteractiveChart({xValue, yValue}) {
       }
       {
         // Vertical grid
-        priceList.map((_, index) => (
+        value.map((_, index) => (
           <Line
             key={index.toString()}
             y1="0%"
@@ -149,7 +149,7 @@ export default function InteractiveChart({xValue, yValue}) {
       <G x={x(positionX)} key="tooltip">
         <G
           x={positionX > size.current / 2 ? -apx(300 + 10) : apx(10)}
-          y={y(priceList[positionX]) - apx(10)}>
+          y={y(value[positionX]) - apx(10)}>
           <Rect
             y={-apx(24 + 24 + 20) / 2}
             rx={apx(12)} // borderRadius
@@ -169,7 +169,7 @@ export default function InteractiveChart({xValue, yValue}) {
             fontSize={apx(24)}
             fontWeight="bold"
             fill="rgba(224, 188, 136, 1)">
-            {priceList[positionX]}°C
+            {value[positionX]}°C
           </SvgText>
         </G>
 
@@ -183,7 +183,7 @@ export default function InteractiveChart({xValue, yValue}) {
           />
 
           <Circle
-            cy={y(priceList[positionX])}
+            cy={y(value[positionX])}
             r={apx(20 / 2)}
             stroke="#fff"
             strokeWidth={apx(2)}
@@ -212,7 +212,7 @@ export default function InteractiveChart({xValue, yValue}) {
         <View style={{flex: 1}} {...panResponder.current.panHandlers}>
           <AreaChart
             style={{flex: 1}}
-            data={priceList}
+            data={value}
             // curve={shape.curveNatural}
             curve={shape.curveMonotoneX}
             contentInset={{...verticalContentInset}}
@@ -226,7 +226,7 @@ export default function InteractiveChart({xValue, yValue}) {
 
         <YAxis
           style={{width: apx(130)}}
-          data={priceList}
+          data={value}
           contentInset={verticalContentInset}
           svg={{fontSize: apx(25), fill: '#617485'}}
         />
@@ -239,7 +239,7 @@ export default function InteractiveChart({xValue, yValue}) {
           height: apx(60),
         }}
         numberOfTicks={7}
-        data={priceList}
+        data={value}
         formatLabel={(value, index) => dateList[value]}
         contentInset={{
           left: apx(36),
