@@ -16,6 +16,18 @@ export default function Dash({
   screenName,
   params,
 }) {
+  if (!Array.isArray(arrayDados) || arrayDados.length === 0) {
+    // Se o arrayDados não estiver pronto, pode retornar algo indicando que os dados estão sendo carregados
+    return <Text>Carregando dados...</Text>; // ou qualquer outro indicador visual
+  }
+  console.log('Renderizando Dash com os seguintes dados:');
+  console.log('Value:', value);
+  console.log('Unidade:', unidade);
+  console.log('Array de Dados:', arrayDados);
+  console.log('Mock:', mock);
+  console.log('Rota:', rota);
+  console.log('Nome da Tela:', screenName);
+  console.log('Parâmetros:', params);
   return (
     <>
       <TouchableOpacity

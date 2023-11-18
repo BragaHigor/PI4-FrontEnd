@@ -23,10 +23,22 @@ export default function Dashboard(props) {
   const {navigation} = props;
 
   const [isModalVisible, setModalVisible] = useState(false);
+  const [dataUsers, setDataUsers] = useState(false);
+  const [dataEqp, setDataEqp] = useState(false);
+  const [dataInfos, setDataInfos] = useState(false);
   const [nomeCliente, setNomeCliente] = useState('');
+  const [serialNumber, setSerialNumber] = useState('');
+  const [infos, setInfos] = useState();
+  const [temperature, setTemperature] = useState();
+  const [airMoisture, setAirMoisture] = useState();
+  const [soilMoisture, setSoilMoisture] = useState();
 
+  const [arrayTemp, setArrayTemp] = useState(); // temperature
+  const [arrayAir, setArrayAir] = useState(); // airMoisture
+  const [arraySoil, setArraySoil] = useState(); // soilMoisture
+  
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchUsers = async () => {
       try {
         const token = await AsyncStorage.getItem('token_API');
         // console.log('Dash Token:', token);
@@ -35,8 +47,10 @@ export default function Dashboard(props) {
           const response = await http.get('/users');
 
           const data = response.data;
-          console.log(response);
+          console.log(data);
           setNomeCliente(data[0].name);
+
+          setDataUsers(true);
         }
       } catch (error) {
         console.error('Erro ao obter os dados do cliente:', error);
@@ -47,8 +61,92 @@ export default function Dashboard(props) {
       }
     };
 
-    fetchData();
+    fetchUsers();
   }, []);
+
+  useEffect(() => {
+    const fetchEquipments = async () => {
+      try {
+        const token = await AsyncStorage.getItem('token_API');
+        // console.log('Dash Token:', token);
+
+        if (token && dataUsers) {
+          const serial = await http.get('/equipments');
+          const serialData = serial.data;
+          setSerialNumber(serialData[0].serialNumber);
+          setDataEqp(true);
+        }
+      } catch (error) {
+        console.error('Erro ao obter os dados do equipment:', error);
+        console.error(
+          'Erro ao obter os dados do equipment:',
+          error.response ? error.response.data : error.message,
+        );
+      }
+    };
+
+    fetchEquipments();
+  }, [dataUsers]);
+
+  useEffect(() => {
+    const fetchInfos = async () => {
+      try {
+        const token = await AsyncStorage.getItem('token_API');
+        // console.log('Dash Token:', token);
+
+        if (token && dataEqp) {
+          const response = await http.get('/infos', {
+            params: {
+              equipmentSerialNumber: serialNumber
+            }
+          });
+
+          const data = response.data.data;
+          console.log(data);
+          setInfos(data);
+          setAirMoisture(data[0].airMoisture);
+          setTemperature(data[0].temperature);
+          setSoilMoisture(data[0].soilMoisture);
+          setDataInfos(true)
+          
+        }
+        
+        
+      } catch (error) {
+        console.error('Erro ao obter os dados de infos:', error);
+        console.error(
+          'Erro ao obter os dados de infos:',
+          error.response ? error.response.data : error.message,
+        );
+      }
+    };
+
+    fetchInfos();
+  }, [dataEqp]);
+
+  useEffect(() => {
+    const tempArray = [];
+    const airArray = [];
+    const soilArray = [];
+
+    if (infos){
+      
+      infos.forEach(entry => {
+        tempArray.push(entry.temperature);
+        airArray.push(entry.airMoisture);
+        soilArray.push(entry.soilMoisture);
+      });
+      
+    }
+
+    console.log('Temp Array:', tempArray);
+    console.log('Air Array:', airArray);
+    console.log('Soil Array:', soilArray);
+    setArrayTemp(tempArray);
+    setArrayAir(airArray);
+    setArraySoil(soilArray);
+    
+  }, [infos]);
 
   const openModal = () => {
     setModalVisible(true);
@@ -101,7 +199,8 @@ export default function Dashboard(props) {
 
   const array1 = Array.from({length: 11}, () => Math.floor(Math.random() * 90));
   const array2 = Array.from({length: 11}, () => Math.floor(Math.random() * 90));
-  const array5 = Array.from({length: 11}, () => Math.floor(Math.random() * 90));
+  const array3 = Array.from({length: 11}, () => Math.floor(Math.random() * 90));
+
 
   return (
     <>
@@ -118,11 +217,11 @@ export default function Dashboard(props) {
             </TouchableOpacity>
           </Block>
         </Block>
-
+        
         <Dash
-          value={34}
+          value={airMoisture}
           unidade={'%'}
-          arrayDados={array1}
+          arrayDados={arrayAir}
           mock={mocks.ar.name}
           rota={navigation}
           screenName="UmidadeDoAr"
@@ -130,9 +229,9 @@ export default function Dashboard(props) {
         />
 
         <Dash
-          value={25}
+          value={soilMoisture}
           unidade={'%'}
-          arrayDados={array2}
+          arrayDados={arraySoil}
           mock={mocks.solo.name}
           rota={navigation}
           screenName="UmidadeDoSolo"
@@ -140,9 +239,9 @@ export default function Dashboard(props) {
         />
 
         <Dash
-          value={15}
+          value={temperature}
           unidade={'°C'}
-          arrayDados={array5}
+          arrayDados={arrayTemp}
           mock={mocks.temperatura.name}
           rota={navigation}
           screenName="Temperatura"

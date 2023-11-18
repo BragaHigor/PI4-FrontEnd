@@ -84,7 +84,7 @@ export default function Temperatura() {
         <Block flex column space="around">
           <Dados
             title="Média"
-            value={300}
+            value={300} // dados de statistics por dia
             title2="Modal/Mediana"
             value2={100}
           />
@@ -129,7 +129,7 @@ export default function Temperatura() {
         <Block flex column space="around">
           <Dados
             title="Média"
-            value={2000}
+            value={2000} // dados de statistics por hora
             title2="Modal/Mediana"
             value2={50000}
           />
