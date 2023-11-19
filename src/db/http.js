@@ -6,7 +6,7 @@ const token = async () => {
 };
 
 const http = axios.create({
-  baseURL: 'https://pi-4-server.vercel.app/api/v1',
+  baseURL: 'http://pi-4-server.vercel.app/api/v1',
   timeout: 5000,
 });
 

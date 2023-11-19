@@ -36,7 +36,7 @@ export default function Dashboard(props) {
   const [arrayTemp, setArrayTemp] = useState(); // temperature
   const [arrayAir, setArrayAir] = useState(); // airMoisture
   const [arraySoil, setArraySoil] = useState(); // soilMoisture
-  
+
   useEffect(() => {
     const fetchUsers = async () => {
       try {
@@ -97,8 +97,8 @@ export default function Dashboard(props) {
         if (token && dataEqp) {
           const response = await http.get('/infos', {
             params: {
-              equipmentSerialNumber: serialNumber
-            }
+              equipmentSerialNumber: serialNumber,
+            },
           });
 
           const data = response.data.data;
@@ -107,11 +107,8 @@ export default function Dashboard(props) {
           setAirMoisture(data[0].airMoisture);
           setTemperature(data[0].temperature);
           setSoilMoisture(data[0].soilMoisture);
-          setDataInfos(true)
-          
+          setDataInfos(true);
         }
-        
-        
       } catch (error) {
         console.error('Erro ao obter os dados de infos:', error);
         console.error(
@@ -122,21 +119,19 @@ export default function Dashboard(props) {
     };
 
     fetchInfos();
-  }, [dataEqp]);
+  }, [dataEqp, serialNumber]);
 
   useEffect(() => {
     const tempArray = [];
     const airArray = [];
     const soilArray = [];
 
-    if (infos){
-      
+    if (infos) {
       infos.forEach(entry => {
         tempArray.push(entry.temperature);
         airArray.push(entry.airMoisture);
         soilArray.push(entry.soilMoisture);
       });
-      
     }
 
     console.log('Temp Array:', tempArray);
@@ -145,7 +140,6 @@ export default function Dashboard(props) {
     setArrayTemp(tempArray);
     setArrayAir(airArray);
     setArraySoil(soilArray);
-    
   }, [infos]);
 
   const openModal = () => {
@@ -197,10 +191,9 @@ export default function Dashboard(props) {
     );
   }
 
-  const array1 = Array.from({length: 11}, () => Math.floor(Math.random() * 90));
-  const array2 = Array.from({length: 11}, () => Math.floor(Math.random() * 90));
-  const array3 = Array.from({length: 11}, () => Math.floor(Math.random() * 90));
-
+  // const array1 = Array.from({length: 11}, () => Math.floor(Math.random() * 90));
+  // const array2 = Array.from({length: 11}, () => Math.floor(Math.random() * 90));
+  // const array3 = Array.from({length: 11}, () => Math.floor(Math.random() * 90));
 
   return (
     <>
@@ -217,7 +210,7 @@ export default function Dashboard(props) {
             </TouchableOpacity>
           </Block>
         </Block>
-        
+
         <Dash
           value={airMoisture}
           unidade={'%'}

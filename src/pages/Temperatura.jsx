@@ -51,19 +51,21 @@ export default function Temperatura() {
         if (token && dataEqp) {
           const response = await http.get('/infos', {
             params: {
-              equipmentSerialNumber: serialNumber
-            }
+              equipmentSerialNumber: serialNumber,
+            },
           });
 
           const data = response.data.data;
           console.log(data);
           const newData = {
             Dias: {
-              x: data.map(entry => moment(entry.date, "DD/MM/YYYY").format("DD-MM")), // Substitua 'date' pelo campo da data na sua API
+              x: data.map(entry =>
+                moment(entry.date, 'DD/MM/YYYY').format('DD-MM'),
+              ), // Substitua 'date' pelo campo da data na sua API
               y: data.map(entry => entry.temperature), // Substitua 'temperature' pelo campo de temperatura na sua API
             },
             Horas: {
-              x: data.map(entry => moment(entry.time, "HH:mm:ss").format("HH")), // Substitua 'date' pelo campo da data na sua API
+              x: data.map(entry => moment(entry.time, 'HH:mm:ss').format('HH')), // Substitua 'date' pelo campo da data na sua API
               y: data.map(entry => entry.temperature), // Substitua 'temperature' pelo campo de temperatura na sua API
             },
           };
@@ -71,10 +73,7 @@ export default function Temperatura() {
           setDados(newData);
           console.log(dados);
           setDataInfos(true);
-          
         }
-        
-        
       } catch (error) {
         console.error('Erro ao obter os dados de infos:', error);
         console.error(
@@ -85,7 +84,7 @@ export default function Temperatura() {
     };
 
     fetchInfos();
-  }, [dataEqp]);
+  }, [dados, dataEqp, serialNumber]);
 
   const dateList = dados[selectedOption]?.x || [];
   const value = dados[selectedOption]?.y || [];
