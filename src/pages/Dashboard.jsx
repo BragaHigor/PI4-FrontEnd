@@ -47,7 +47,7 @@ export default function Dashboard(props) {
           const response = await http.get('/users');
 
           const data = response.data;
-          console.log(data);
+          // console.log(data);
           setNomeCliente(data[0].name);
 
           setDataUsers(true);
@@ -102,7 +102,7 @@ export default function Dashboard(props) {
           });
 
           const data = response.data.data;
-          console.log(data);
+          // console.log(data);
           setInfos(data);
           setAirMoisture(data[0].airMoisture);
           setTemperature(data[0].temperature);
@@ -130,8 +130,8 @@ export default function Dashboard(props) {
     const soilArray = [];
 
     if (infos){
-      
-      infos.forEach(entry => {
+      const lastFiveEntries = infos.slice(-5);
+      lastFiveEntries.forEach(entry => {
         tempArray.push(entry.temperature);
         airArray.push(entry.airMoisture);
         soilArray.push(entry.soilMoisture);
@@ -139,9 +139,9 @@ export default function Dashboard(props) {
       
     }
 
-    console.log('Temp Array:', tempArray);
-    console.log('Air Array:', airArray);
-    console.log('Soil Array:', soilArray);
+    // console.log('Temp Array:', tempArray);
+    // console.log('Air Array:', airArray);
+    // console.log('Soil Array:', soilArray);
     setArrayTemp(tempArray);
     setArrayAir(airArray);
     setArraySoil(soilArray);
@@ -196,11 +196,6 @@ export default function Dashboard(props) {
       </>
     );
   }
-
-  const array1 = Array.from({length: 11}, () => Math.floor(Math.random() * 90));
-  const array2 = Array.from({length: 11}, () => Math.floor(Math.random() * 90));
-  const array3 = Array.from({length: 11}, () => Math.floor(Math.random() * 90));
-
 
   return (
     <>

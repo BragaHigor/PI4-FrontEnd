@@ -15,6 +15,14 @@ export default function Temperatura() {
   const [dataEqp, setDataEqp] = useState(false);
   const [dataInfos, setDataInfos] = useState(false);
   const [serialNumber, setSerialNumber] = useState('');
+  const [infos, setInfos] = useState([]);
+  const [arrayTemp, setArrayTemp] = useState();
+  const [mean, setMean] = useState(''); 
+  const [mode, setMode] = useState(''); 
+  const [median, setMedian] = useState(''); 
+  const [standardDeviation, setStandardDeviation] = useState(''); 
+  const [skewness, setSkewness] = useState(''); 
+  const [kurtosis, setKurtosis] = useState('');
 
   const [dados, setDados] = useState({});
 
@@ -56,20 +64,23 @@ export default function Temperatura() {
           });
 
           const data = response.data.data;
-          console.log(data);
+          const lastFiveData = data.slice(0,5);
+          // console.log(lastFiveData);
           const newData = {
             Dias: {
-              x: data.map(entry => moment(entry.date, "DD/MM/YYYY").format("DD-MM")), // Substitua 'date' pelo campo da data na sua API
-              y: data.map(entry => entry.temperature), // Substitua 'temperature' pelo campo de temperatura na sua API
+              x: lastFiveData.map(entry => moment(entry.date, "DD/MM/YYYY").format("DD-MM")), // Substitua 'date' pelo campo da data na sua API
+              y: lastFiveData.map(entry => entry.temperature), // Substitua 'temperature' pelo campo de temperatura na sua API
             },
             Horas: {
-              x: data.map(entry => moment(entry.time, "HH:mm:ss").format("HH")), // Substitua 'date' pelo campo da data na sua API
-              y: data.map(entry => entry.temperature), // Substitua 'temperature' pelo campo de temperatura na sua API
+              x: lastFiveData.map(entry => moment(entry.time, "HH:mm:ss").format("HH")), // Substitua 'date' pelo campo da data na sua API
+              y: lastFiveData.map(entry => entry.temperature), // Substitua 'temperature' pelo campo de temperatura na sua API
             },
           };
+          
 
           setDados(newData);
-          console.log(dados);
+          // console.log(dados);
+          setInfos(data);
           setDataInfos(true);
           
         }
@@ -86,6 +97,60 @@ export default function Temperatura() {
 
     fetchInfos();
   }, [dataEqp]);
+
+  useEffect(() => {
+    const tempArray = [];
+
+    if (infos){
+      const lastFiveEntries = infos.slice(-5);
+      
+      lastFiveEntries.forEach(entry => {
+        tempArray.push(entry.temperature);
+      });
+      
+    }
+
+    // const formattedArray = { data: tempArray };
+    console.log('Temp Array:', tempArray);
+    setArrayTemp(tempArray);
+    
+  }, [infos]);
+
+  useEffect(() => {
+    const fetchStatistics = async () => {
+      try {
+        const token = await AsyncStorage.getItem('token_API');
+        // console.log('Dash Token:', token);
+
+        if (token && arrayTemp && arrayTemp.length > 0) {
+
+          const requestBody = {
+            // Adicione os dados que você precisa enviar no corpo da requisição
+            data: arrayTemp
+          };
+          
+          console.log(requestBody);
+          const response = await http.get('/infos/statistic', requestBody);
+          const statistics = response.data;
+          console.log(statistics);
+          // setMean(statistics[0].mean);
+          // setMode(statistics[0].mode);
+          // setMedian(statistics[0].median);
+          // setStandardDeviation(statistics[0].standardDeviation);
+          // setKurtosis(statistics[0].kurtosis);
+          // setSkewness(statistics[0].skewness);
+        }
+      } catch (error) {
+        console.error('Erro ao obter os dados de estatistica:', error);
+        console.error(
+          'Erro ao obter os dados de estatistica:',
+          error.response ? error.response.data : error.message,
+        );
+      }
+    };
+
+    fetchStatistics();
+  }, [arrayTemp]);
 
   const dateList = dados[selectedOption]?.x || [];
   const value = dados[selectedOption]?.y || [];

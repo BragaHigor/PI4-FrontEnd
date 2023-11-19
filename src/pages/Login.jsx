@@ -25,7 +25,7 @@ export default function Login(props) {
         password: password,
       });
       const token = response.data.token;
-      console.log(response);
+      // console.log(response);
 
       await AsyncStorage.setItem('token_API', token);
       props.navigation.navigate('Dashboard');
