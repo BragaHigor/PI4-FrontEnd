@@ -15,7 +15,8 @@ import * as theme from '../styles/theme';
 import {Block, Text} from '../components';
 import mocks from '../interface/settings';
 import Dash from '../components/Dash';
-import Icon from '../assets/img/user-30.png';
+import IconUser from '../assets/img/user-30.png';
+import IconClose from '../assets/img/sair.png';
 import Close from '../assets/img/X.png';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import http from '../db/http';
@@ -151,6 +152,17 @@ export default function Dashboard(props) {
     setModalVisible(false);
   };
 
+  const handleLogout = async () => {
+    try {
+      // Remova o token do AsyncStorage
+      await AsyncStorage.removeItem('token_API');
+      // Redirecione para a tela de login
+      navigation.replace('Login');
+    } catch (error) {
+      console.error('Erro ao fazer logout:', error);
+    }
+  };
+
   function EditInfo() {
     return (
       <>
@@ -202,9 +214,14 @@ export default function Dashboard(props) {
               <Text welcome>Bem-Vindo</Text>
               <Text name>{nomeCliente}</Text>
             </Block>
-            <TouchableOpacity activeOpacity={0.8} onPress={openModal}>
-              <Image source={Icon} />
-            </TouchableOpacity>
+            <View style={styles.statistics}>
+              <TouchableOpacity activeOpacity={0.8} onPress={openModal}>
+                <Image source={IconUser} />
+              </TouchableOpacity>
+              <TouchableOpacity activeOpacity={0.8} onPress={handleLogout}>
+                <Image source={IconClose} />
+              </TouchableOpacity>
+            </View>
           </Block>
         </Block>
 
@@ -213,7 +230,7 @@ export default function Dashboard(props) {
           unidade={'%'}
           arrayDados={arrayAir}
           mock={mocks.ar.name}
-          rota={navigation}
+          navigation={navigation}
           screenName="UmidadeDoAr"
           params={{name: 'ar'}}
         />
@@ -223,7 +240,7 @@ export default function Dashboard(props) {
           unidade={'%'}
           arrayDados={arraySoil}
           mock={mocks.solo.name}
-          rota={navigation}
+          navigation={navigation}
           screenName="UmidadeDoSolo"
           params={{name: 'solo'}}
         />
@@ -233,7 +250,7 @@ export default function Dashboard(props) {
           unidade={'°C'}
           arrayDados={arrayTemp}
           mock={mocks.temperatura.name}
-          rota={navigation}
+          navigation={navigation}
           screenName="Temperatura"
           params={{name: 'temperatura'}}
         />
@@ -249,5 +266,12 @@ Dashboard.defaultProps = {
 const styles = StyleSheet.create({
   dashboard: {
     padding: theme.sizes.base * 2,
+  },
+  statistics: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+    gap: 20,
   },
 });
