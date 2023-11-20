@@ -17,11 +17,11 @@ export default function UmidadeDoSolo() {
   const [serialNumber, setSerialNumber] = useState('');
   const [infos, setInfos] = useState([]);
   const [arraySoil, setArraySoil] = useState();
-  const [mean, setMean] = useState(''); 
-  const [mode, setMode] = useState(''); 
-  const [median, setMedian] = useState(''); 
-  const [standardDeviation, setStandardDeviation] = useState(''); 
-  const [skewness, setSkewness] = useState(''); 
+  const [mean, setMean] = useState('');
+  const [mode, setMode] = useState('');
+  const [median, setMedian] = useState('');
+  const [standardDeviation, setStandardDeviation] = useState('');
+  const [skewness, setSkewness] = useState('');
   const [kurtosis, setKurtosis] = useState('');
 
   const [dados, setDados] = useState({});
@@ -59,33 +59,33 @@ export default function UmidadeDoSolo() {
         if (token && dataEqp) {
           const response = await http.get('/infos', {
             params: {
-              equipmentSerialNumber: serialNumber
-            }
+              equipmentSerialNumber: serialNumber,
+            },
           });
 
           const data = response.data.data;
-          const lastFiveData = data.slice(0,5);
+          const lastFiveData = data.slice(0, 5);
           // console.log(lastFiveData);
           const newData = {
             Dias: {
-              x: lastFiveData.map(entry => moment(entry.date, "DD/MM/YYYY").format("DD-MM")), // Substitua 'date' pelo campo da data na sua API
+              x: lastFiveData.map(entry =>
+                moment(entry.date, 'DD/MM/YYYY').format('DD-MM'),
+              ), // Substitua 'date' pelo campo da data na sua API
               y: lastFiveData.map(entry => entry.soilMoisture), // Substitua 'soilMoisture' pelo campo de temperatura na sua API
             },
             Horas: {
-              x: lastFiveData.map(entry => moment(entry.time, "HH:mm:ss").format("HH")), // Substitua 'date' pelo campo da data na sua API
+              x: lastFiveData.map(entry =>
+                moment(entry.time, 'HH:mm:ss').format('HH'),
+              ), // Substitua 'date' pelo campo da data na sua API
               y: lastFiveData.map(entry => entry.soilMoisture), // Substitua 'soilMoisture' pelo campo de temperatura na sua API
             },
           };
-          
 
           setDados(newData);
           // console.log(dados);
           setInfos(data);
           setDataInfos(true);
-          
         }
-        
-        
       } catch (error) {
         console.error('Erro ao obter os dados de infos:', error);
         console.error(
@@ -96,24 +96,22 @@ export default function UmidadeDoSolo() {
     };
 
     fetchInfos();
-  }, [dataEqp]);
+  }, [dataEqp, serialNumber]);
 
   useEffect(() => {
     const soilArray = [];
 
-    if (infos){
+    if (infos) {
       const lastFiveEntries = infos.slice(-5);
-      
+
       lastFiveEntries.forEach(entry => {
         soilArray.push(entry.soilMoisture);
       });
-      
     }
 
     // const formattedArray = { data: soilArray };
     // console.log('Soil Array:', soilArray);
     setArraySoil(soilArray);
-    
   }, [infos]);
 
   // useEffect(() => {
@@ -128,7 +126,7 @@ export default function UmidadeDoSolo() {
   //           // Adicione os dados que você precisa enviar no corpo da requisição
   //           data: arraySoil
   //         };
-          
+
   //         console.log(requestBody);
   //         const response = await http.get('/infos/statistic', requestBody);
   //         const statistics = response.data;

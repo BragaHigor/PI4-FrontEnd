@@ -11,18 +11,17 @@ import moment from 'moment';
 import InteractiveChart from '../components/graficos/InteractiveChart';
 
 export default function UmidadeDoAr() {
-
   const [selectedOption, setSelectedOption] = useState('Dias');
   const [dataEqp, setDataEqp] = useState(false);
   const [dataInfos, setDataInfos] = useState(false);
   const [serialNumber, setSerialNumber] = useState('');
   const [infos, setInfos] = useState([]);
   const [arrayAir, setArrayAir] = useState();
-  const [mean, setMean] = useState(''); 
-  const [mode, setMode] = useState(''); 
-  const [median, setMedian] = useState(''); 
-  const [standardDeviation, setStandardDeviation] = useState(''); 
-  const [skewness, setSkewness] = useState(''); 
+  const [mean, setMean] = useState('');
+  const [mode, setMode] = useState('');
+  const [median, setMedian] = useState('');
+  const [standardDeviation, setStandardDeviation] = useState('');
+  const [skewness, setSkewness] = useState('');
   const [kurtosis, setKurtosis] = useState('');
 
   const [dados, setDados] = useState({});
@@ -60,33 +59,33 @@ export default function UmidadeDoAr() {
         if (token && dataEqp) {
           const response = await http.get('/infos', {
             params: {
-              equipmentSerialNumber: serialNumber
-            }
+              equipmentSerialNumber: serialNumber,
+            },
           });
 
           const data = response.data.data;
-          const lastFiveData = data.slice(0,5);
+          const lastFiveData = data.slice(0, 5);
           // console.log(lastFiveData);
           const newData = {
             Dias: {
-              x: lastFiveData.map(entry => moment(entry.date, "DD/MM/YYYY").format("DD-MM")), // Substitua 'date' pelo campo da data na sua API
+              x: lastFiveData.map(entry =>
+                moment(entry.date, 'DD/MM/YYYY').format('DD-MM'),
+              ), // Substitua 'date' pelo campo da data na sua API
               y: lastFiveData.map(entry => entry.airMoisture), // Substitua 'airMoisture' pelo campo de temperatura na sua API
             },
             Horas: {
-              x: lastFiveData.map(entry => moment(entry.time, "HH:mm:ss").format("HH")), // Substitua 'date' pelo campo da data na sua API
+              x: lastFiveData.map(entry =>
+                moment(entry.time, 'HH:mm:ss').format('HH'),
+              ), // Substitua 'date' pelo campo da data na sua API
               y: lastFiveData.map(entry => entry.airMoisture), // Substitua 'airMoisture' pelo campo de temperatura na sua API
             },
           };
-          
 
           setDados(newData);
           // console.log(dados);
           setInfos(data);
           setDataInfos(true);
-          
         }
-        
-        
       } catch (error) {
         console.error('Erro ao obter os dados de infos:', error);
         console.error(
@@ -97,24 +96,22 @@ export default function UmidadeDoAr() {
     };
 
     fetchInfos();
-  }, [dataEqp]);
+  }, [dataEqp, serialNumber]);
 
   useEffect(() => {
     const airArray = [];
 
-    if (infos){
+    if (infos) {
       const lastFiveEntries = infos.slice(-5);
-      
+
       lastFiveEntries.forEach(entry => {
         airArray.push(entry.airMoisture);
       });
-      
     }
 
     // const formattedArray = { data: airArray };
     // console.log('Air Array:', airArray);
     setArrayAir(airArray);
-    
   }, [infos]);
 
   // useEffect(() => {
@@ -129,7 +126,7 @@ export default function UmidadeDoAr() {
   //           // Adicione os dados que você precisa enviar no corpo da requisição
   //           data: arrayAir
   //         };
-          
+
   //         console.log(requestBody);
   //         const response = await http.get('/infos/statistic', requestBody);
   //         const statistics = response.data;
