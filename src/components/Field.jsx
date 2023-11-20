@@ -3,7 +3,7 @@ import React from 'react';
 import {TextInput} from 'react-native';
 import {darkGreen} from '../styles/Constants';
 
-export default function Field(props) {
+export default function Field({value, ...props}) {
   return (
     <TextInput
       {...props}
@@ -12,10 +12,11 @@ export default function Field(props) {
         color: darkGreen,
         paddingHorizontal: 10,
         width: '78%',
-        backgroundColor: 'rgb(220,220,220)',
+        backgroundColor: 'rgb(220, 220, 220)',
         marginVertical: 10,
       }}
       placeholderTextColor={darkGreen}
+      value={value} // Certifique-se de passar o valor corretamente aqui
     />
   );
 }

@@ -1,12 +1,47 @@
+/* eslint-disable no-alert */
 /* eslint-disable react-native/no-inline-styles */
 import {View, Text, TouchableOpacity} from 'react-native';
-import React from 'react';
+import React, {useState} from 'react';
 import Background from '../components/Background';
 import {darkGreen} from '../styles/Constants';
 import Field from '../components/Field';
 import Btn from '../components/Btn';
+import http from '../db/http';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function Login(props) {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  const handleLogin = async () => {
+    if (!email || !password) {
+      alert('Preencha todos os campos');
+      return;
+    }
+
+    try {
+      const response = await http.post('/users/auth', {
+        email: email,
+        password: password,
+      });
+      const token = response.data.token;
+      // console.log(response);
+
+      await AsyncStorage.setItem('token_API', token);
+      props.navigation.navigate('Dashboard');
+    } catch (error) {
+      console.error('Login failed', error);
+      console.error(
+        'Response Status:',
+        error.response ? error.response.status : 'N/A',
+      );
+      console.error(
+        'Response Data:',
+        error.response ? error.response.data : 'N/A',
+      );
+    }
+  };
+
   return (
     <Background>
       <View style={{alignItems: 'center', width: '100%'}}>
@@ -45,8 +80,17 @@ export default function Login(props) {
             }}>
             Login to yout account
           </Text>
-          <Field placeholder="Email" />
-          <Field placeholder="Password" secureTextEntry={true} />
+          <Field
+            placeholder="Email"
+            value={email}
+            onChangeText={text => setEmail(text)}
+          />
+          <Field
+            placeholder="Password"
+            secureTextEntry={true}
+            value={password}
+            onChangeText={text => setPassword(text)}
+          />
           <View
             style={{
               alignItems: 'flex-end',
@@ -62,9 +106,7 @@ export default function Login(props) {
             textColor="white"
             bgColor={darkGreen}
             btnLabel="Login"
-            Press={() => {
-              props.navigation.navigate('Dashboard');
-            }}
+            Press={handleLogin}
           />
           <View
             style={{
