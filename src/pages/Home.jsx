@@ -16,13 +16,13 @@ export default function Home(props) {
         <Btn
           bgColor={green}
           textColor="white"
-          btnLabel="Login"
+          btnLabel="Entrar"
           Press={() => props.navigation.navigate('Login')}
         />
         <Btn
           bgColor="white"
           textColor={darkGreen}
-          btnLabel="Signup"
+          btnLabel="Cadastrar-se"
           Press={() => props.navigation.navigate('Register')}
         />
       </View>

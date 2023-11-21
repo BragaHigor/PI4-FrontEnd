@@ -69,7 +69,7 @@ export default function Login(props) {
               color: darkGreen,
               fontWeight: 'bold',
             }}>
-            Welcome Back
+            Bem Vindo,
           </Text>
           <Text
             style={{
@@ -78,7 +78,7 @@ export default function Login(props) {
               fontWeight: 'bold',
               marginBottom: 20,
             }}>
-            Login to yout account
+            Faça o login com a sua conta
           </Text>
           <Field
             placeholder="Email"
@@ -86,7 +86,7 @@ export default function Login(props) {
             onChangeText={text => setEmail(text)}
           />
           <Field
-            placeholder="Password"
+            placeholder="Senha"
             secureTextEntry={true}
             value={password}
             onChangeText={text => setPassword(text)}
@@ -98,14 +98,14 @@ export default function Login(props) {
               paddingRight: 16,
               marginBottom: 180,
             }}>
-            <Text style={{color: darkGreen, fontWeight: 'bold', fontSize: 16}}>
+            {/* <Text style={{color: darkGreen, fontWeight: 'bold', fontSize: 16}}>
               Forgot Password ?
-            </Text>
+            </Text> */}
           </View>
           <Btn
             textColor="white"
             bgColor={darkGreen}
-            btnLabel="Login"
+            btnLabel="Entrar"
             Press={handleLogin}
           />
           <View
@@ -115,13 +115,13 @@ export default function Login(props) {
               justifyContent: 'center',
             }}>
             <Text style={{fontWeight: 'bold', fontSize: 16}}>
-              Don't have an account ?{' '}
+              Ainda não tem uma conta ?{' '}
             </Text>
             <TouchableOpacity
               onPress={() => props.navigation.navigate('Register')}>
               <Text
                 style={{color: darkGreen, fontWeight: 'bold', fontSize: 16}}>
-                Signup
+                Cadastre-se
               </Text>
             </TouchableOpacity>
           </View>

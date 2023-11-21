@@ -1,182 +1,31 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {ScrollView, StyleSheet, TouchableOpacity} from 'react-native';
 import * as theme from '../styles/theme';
 import {Block, Text} from '../components';
 import mocks from '../interface/settings';
 import Dados from '../components/Estatistica';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import http from '../db/http';
-import moment from 'moment';
 
 import InteractiveChart from '../components/graficos/InteractiveChart';
 
 export default function UmidadeDoAr() {
+  const array = Array.from({length: 5}, () => Math.floor(Math.random() * 90));
+  const array1 = Array.from({length: 5}, () => Math.floor(Math.random() * 90));
+
   const [selectedOption, setSelectedOption] = useState('Dias');
-  const [dataEqp, setDataEqp] = useState(false);
-  const [dataInfos, setDataInfos] = useState(false);
-  const [serialNumber, setSerialNumber] = useState('');
-  const [infos, setInfos] = useState([]);
-  const [perHour, setPerHour] = useState([]);
-  const [perDay, setPerDay] = useState([]);
-  const [arrayAir, setArrayAir] = useState();
-  const [mean, setMean] = useState('');
-  const [mode, setMode] = useState('');
-  const [median, setMedian] = useState('');
-  const [standardDeviation, setStandardDeviation] = useState('');
-  const [skewness, setSkewness] = useState('');
-  const [kurtosis, setKurtosis] = useState('');
+  const [dados, setDados] = useState({
+    Dias: {
+      x: ['08-10', '08-11', '08-12', '08-13', '08-14'],
+      y: array,
+    },
+    Horas: {
+      x: ['08-10', '08-11', '08-12', '08-13', '08-14'],
+      y: array1,
+    },
+  });
 
-  const [dados, setDados] = useState({});
+  const dateList = dados[selectedOption].x;
+  const priceList = dados[selectedOption].y;
 
-  useEffect(() => {
-    const fetchEquipments = async () => {
-      try {
-        const token = await AsyncStorage.getItem('token_API');
-        // console.log('Dash Token:', token);
-
-        if (token) {
-          const serial = await http.get('/equipments');
-          const serialData = serial.data;
-          setSerialNumber(serialData[0].serialNumber);
-          setDataEqp(true);
-        }
-      } catch (error) {
-        console.error('Erro ao obter os dados do equipment:', error);
-        console.error(
-          'Erro ao obter os dados do equipment:',
-          error.response ? error.response.data : error.message,
-        );
-      }
-    };
-
-    fetchEquipments();
-  }, []);
-
-  useEffect(() => {
-    const fetchInfos = async () => {
-      try {
-        const currentDate = new Date();
-
-        const initDate = currentDate.toLocaleDateString("pt-BR", {
-          timeZone: "America/Sao_Paulo",
-        });
-
-        const finalDate = new Date(currentDate);
-        finalDate.setDate(currentDate.getDate() - 4);
-
-        const lastDate = finalDate.toLocaleDateString("pt-BR", {
-          timeZone: "America/Sao_Paulo",
-        });
-
-        const token = await AsyncStorage.getItem('token_API');
-        // console.log('Dash Token:', token);
-
-        if (token && dataEqp) {
-          const response = await http.get('/infos', {
-            params: {
-              equipmentSerialNumber: serialNumber,
-              filter: 'day', // verificar se vai deixar day ou hours aqui
-              initDate: lastDate,
-              lastDate: initDate,
-              infosType: 'airMoisture'
-            }
-          });
-
-          const data = response.data;
-          const lastFiveData = data.slice(0,5);
-          setPerHour(lastFiveData);
-          // console.log(lastFiveData);
-          const newData = {
-            Dias: {
-              x: lastFiveData.map(entry => moment(entry.date, "DD/MM/YYYY").format("DD-MM")), // Substitua 'date' pelo campo da data na sua API
-              y: lastFiveData.map(entry => entry.airMoisture), // Substitua 'airMoisture' pelo campo de temperatura na sua API
-            },
-            Horas: {
-              x: lastFiveData.map(entry => moment(entry.time, "HH:mm:ss").format("HH")), // Substitua 'date' pelo campo da data na sua API
-              y: lastFiveData.map(entry => entry.airMoisture), // Substitua 'airMoisture' pelo campo de temperatura na sua API
-            },
-          };
-          
-
-          setDados(newData);
-          // console.log(dados);
-          setInfos(data);
-          setDataInfos(true);
-        }
-      } catch (error) {
-        console.error('Erro ao obter os dados de infos:', error);
-        console.error(
-          'Erro ao obter os dados de infos:',
-          error.response ? error.response.data : error.message,
-        );
-      }
-    };
-
-    fetchInfos();
-  }, [dataEqp, serialNumber]);
-
-  useEffect(() => {
-
-    if (infos){
-      const newData = {
-        Dias: {
-          x: perHour.map(entry => moment(entry.date, "DD/MM/YYYY").format("DD-MM")), // Substitua 'date' pelo campo da data na sua API
-          y: perHour.map(entry => entry.airMoisture), // Substitua 'airMoisture' pelo campo de temperatura na sua API
-        },
-        Horas: {
-          x: perHour.map(entry => moment(entry.time, "HH:mm:ss").format("HH")), // Substitua 'date' pelo campo da data na sua API
-          y: perHour.map(entry => entry.airMoisture), // Substitua 'airMoisture' pelo campo de temperatura na sua API
-        },
-      };
-      setDados(newData);
-    }
-    
-  }, [infos]);
-
-  useEffect(() => {
-    const fetchStatistics = async () => {
-      try {
-        const token = await AsyncStorage.getItem('token_API');
-        // console.log('Dash Token:', token);
-
-        if (token && perHour) {
-
-          // const requestBody = {
-          //   // Adicione os dados que você precisa enviar no corpo da requisição
-          //   data: arraySoil
-          // };
-          
-          // console.log(requestBody);
-          const response = await http.post('/infos/statistic', null,  {
-            params: {
-              equipmentSerialNumber: serialNumber,
-              filter: 'hours',
-              infosType: 'airMoisture',
-            }
-          });
-          const statistics = response.data;
-          console.log(statistics);
-          setMean(statistics[0].airMoisture.mean);
-          setMode(statistics[0].airMoisture.mode);
-          setMedian(statistics[0].airMoisture.median);
-          setStandardDeviation(statistics[0].airMoisture.standardDeviation.toFixed(1));
-          setKurtosis(statistics[0].airMoisture.kurtosis.toFixed(1));
-          setSkewness(statistics[0].airMoisture.skewness.toFixed(1));
-        }
-      } catch (error) {
-        console.error('Erro ao obter os dados de estatistica:', error);
-        console.error(
-          'Erro ao obter os dados de estatistica:',
-          error.response ? error.response.data : error.message,
-        );
-      }
-    };
-
-    fetchStatistics();
-  }, [perHour]);
-
-  const dateList = dados[selectedOption]?.x || [];
-  const value = dados[selectedOption]?.y || [];
   function handleOptionChange(option) {
     setSelectedOption(option);
   }
@@ -232,32 +81,32 @@ export default function UmidadeDoAr() {
             </Block>
             {selectDia()}
           </Block>
-          <InteractiveChart xValue={dateList} yValue={value} />
+          <InteractiveChart xValue={dateList} yValue={priceList} />
         </Block>
 
         <Block flex column space="around">
-        <Dados
+          <Dados
             title="Média"
-            value={300} // dados de statistics por dia
-            title2="Moda"
+            value={300}
+            title2="Modal/Mediana"
             value2={100}
           />
           <Dados
-            title="Mediana"
+            title="Desvio Padrão"
             value={1.8}
-            title2="Desvio Padrão"
+            title2="Assimetria"
             value2={25}
           />
           <Dados
-            title="Assimetria"
+            title="Curtose"
             value={70}
-            title2="Curtose"
+            title2="Probabilidade"
             value2={80}
           />
           <Dados
-            title="Probabilidade"
+            title="Regressão"
             value={15}
-            title2="Regressão"
+            title2="Inferência estatística"
             value2={80}
           />
         </Block>
@@ -278,31 +127,31 @@ export default function UmidadeDoAr() {
             </Block>
             {selectHora()}
           </Block>
-          <InteractiveChart xValue={dateList} yValue={value} />
+          <InteractiveChart xValue={dateList} yValue={priceList} />
         </Block>
         <Block flex column space="around">
-        <Dados
+          <Dados
             title="Média"
-            value={mean}
-            title2="Moda"
-            value2={mode}
+            value={2000}
+            title2="Modal/Mediana"
+            value2={50000}
           />
           <Dados
-            title="Mediana"
-            value={median}
-            title2="Desvio Padrão"
-            value2={standardDeviation}
+            title="Desvio Padrão"
+            value={1.8}
+            title2="Assimetria"
+            value2={25}
           />
           <Dados
-            title="Assimetria"
-            value={skewness}
-            title2="Curtose"
-            value2={kurtosis}
+            title="Curtose"
+            value={70}
+            title2="Probabilidade"
+            value2={80}
           />
           <Dados
-            title="Probabilidade"
+            title="Regressão"
             value={15}
-            title2="Regressão"
+            title2="Inferência estatística"
             value2={80}
           />
         </Block>
