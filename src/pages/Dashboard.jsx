@@ -93,15 +93,16 @@ export default function Dashboard(props) {
       try {
         const token = await AsyncStorage.getItem('token_API');
         // console.log('Dash Token:', token);
-
+        
         if (token && dataEqp) {
           const response = await http.get('/infos', {
             params: {
-              equipmentSerialNumber: serialNumber
-            }
+              equipmentSerialNumber: '24:0A:C4:00:01:10',
+              filter: 'hours',
+            },
           });
 
-          const data = response.data.data;
+          const data = response.data;
           // console.log(data);
           setInfos(data);
           setAirMoisture(data[0].airMoisture);
