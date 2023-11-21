@@ -132,8 +132,6 @@ export default function Temperatura() {
           setPerHour(data);
           
         }
-        
-        
       } catch (error) {
         console.error('Erro ao obter os dados de infos:', error);
         console.error(
@@ -239,6 +237,42 @@ export default function Temperatura() {
     }
     
   }, [infos]);
+
+  // useEffect(() => {
+  //   const fetchStatistics = async () => {
+  //     try {
+  //       const token = await AsyncStorage.getItem('token_API');
+  //       // console.log('Dash Token:', token);
+
+  //       if (token && arrayTemp && arrayTemp.length > 0) {
+
+  //         const requestBody = {
+  //           // Adicione os dados que você precisa enviar no corpo da requisição
+  //           data: arrayTemp
+  //         };
+          
+  //         console.log(requestBody);
+  //         const response = await http.get('/infos/statistic', requestBody);
+  //         const statistics = response.data;
+  //         console.log(statistics);
+  //         // setMean(statistics[0].mean);
+  //         // setMode(statistics[0].mode);
+  //         // setMedian(statistics[0].median);
+  //         // setStandardDeviation(statistics[0].standardDeviation);
+  //         // setKurtosis(statistics[0].kurtosis);
+  //         // setSkewness(statistics[0].skewness);
+  //       }
+  //     } catch (error) {
+  //       console.error('Erro ao obter os dados de estatistica:', error);
+  //       console.error(
+  //         'Erro ao obter os dados de estatistica:',
+  //         error.response ? error.response.data : error.message,
+  //       );
+  //     }
+  //   };
+
+  //   fetchStatistics();
+  // }, [arrayTemp]);
 
   const dateList = dados[selectedOption]?.x || [];
   const value = dados[selectedOption]?.y || [];

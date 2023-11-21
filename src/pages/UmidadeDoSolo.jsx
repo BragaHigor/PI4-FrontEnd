@@ -87,12 +87,23 @@ export default function UmidadeDoSolo() {
           const lastFiveData = data.slice(0,5);
           setPerHour(lastFiveData);
           // console.log(lastFiveData);
+          const newData = {
+            Dias: {
+              x: lastFiveData.map(entry => moment(entry.date, "DD/MM/YYYY").format("DD-MM")), // Substitua 'date' pelo campo da data na sua API
+              y: lastFiveData.map(entry => entry.soilMoisture), // Substitua 'soilMoisture' pelo campo de temperatura na sua API
+            },
+            Horas: {
+              x: lastFiveData.map(entry => moment(entry.time, "HH:mm:ss").format("HH")), // Substitua 'date' pelo campo da data na sua API
+              y: lastFiveData.map(entry => entry.soilMoisture), // Substitua 'soilMoisture' pelo campo de temperatura na sua API
+            },
+          };
+          
+
+          setDados(newData);
+          // console.log(dados);
           setInfos(data);
           setDataInfos(true);
-          
         }
-        
-        
       } catch (error) {
         console.error('Erro ao obter os dados de infos:', error);
         console.error(
@@ -103,7 +114,7 @@ export default function UmidadeDoSolo() {
     };
 
     fetchInfos();
-  }, [dataEqp]);
+  }, [dataEqp, serialNumber]);
 
   useEffect(() => {
 

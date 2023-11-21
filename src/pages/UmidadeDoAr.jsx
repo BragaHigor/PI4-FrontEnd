@@ -11,7 +11,6 @@ import moment from 'moment';
 import InteractiveChart from '../components/graficos/InteractiveChart';
 
 export default function UmidadeDoAr() {
-
   const [selectedOption, setSelectedOption] = useState('Dias');
   const [dataEqp, setDataEqp] = useState(false);
   const [dataInfos, setDataInfos] = useState(false);
@@ -20,11 +19,11 @@ export default function UmidadeDoAr() {
   const [perHour, setPerHour] = useState([]);
   const [perDay, setPerDay] = useState([]);
   const [arrayAir, setArrayAir] = useState();
-  const [mean, setMean] = useState(''); 
-  const [mode, setMode] = useState(''); 
-  const [median, setMedian] = useState(''); 
-  const [standardDeviation, setStandardDeviation] = useState(''); 
-  const [skewness, setSkewness] = useState(''); 
+  const [mean, setMean] = useState('');
+  const [mode, setMode] = useState('');
+  const [median, setMedian] = useState('');
+  const [standardDeviation, setStandardDeviation] = useState('');
+  const [skewness, setSkewness] = useState('');
   const [kurtosis, setKurtosis] = useState('');
 
   const [dados, setDados] = useState({});
@@ -87,12 +86,23 @@ export default function UmidadeDoAr() {
           const lastFiveData = data.slice(0,5);
           setPerHour(lastFiveData);
           // console.log(lastFiveData);
+          const newData = {
+            Dias: {
+              x: lastFiveData.map(entry => moment(entry.date, "DD/MM/YYYY").format("DD-MM")), // Substitua 'date' pelo campo da data na sua API
+              y: lastFiveData.map(entry => entry.airMoisture), // Substitua 'airMoisture' pelo campo de temperatura na sua API
+            },
+            Horas: {
+              x: lastFiveData.map(entry => moment(entry.time, "HH:mm:ss").format("HH")), // Substitua 'date' pelo campo da data na sua API
+              y: lastFiveData.map(entry => entry.airMoisture), // Substitua 'airMoisture' pelo campo de temperatura na sua API
+            },
+          };
+          
+
+          setDados(newData);
+          // console.log(dados);
           setInfos(data);
           setDataInfos(true);
-          
         }
-        
-        
       } catch (error) {
         console.error('Erro ao obter os dados de infos:', error);
         console.error(
@@ -103,7 +113,7 @@ export default function UmidadeDoAr() {
     };
 
     fetchInfos();
-  }, [dataEqp]);
+  }, [dataEqp, serialNumber]);
 
   useEffect(() => {
 

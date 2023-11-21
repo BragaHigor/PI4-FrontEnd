@@ -48,6 +48,7 @@ export default function Register(props) {
         name: `${firstName}`,
         email,
         password,
+        serialNumber: serial,
       };
 
       const response = await http.post('/users', newUser);

@@ -1,3 +1,4 @@
+// App.js
 import * as React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
@@ -8,6 +9,7 @@ import Dashboard from './src/pages/Dashboard';
 import UmidadeDoAr from './src/pages/UmidadeDoAr';
 import UmidadeDoSolo from './src/pages/UmidadeDoSolo';
 import Temperatura from './src/pages/Temperatura';
+import PrivateRoute from './AppPrivateRouter';
 
 const Stack = createNativeStackNavigator();
 
@@ -18,10 +20,34 @@ function App() {
         <Stack.Screen name="Home" component={Home} />
         <Stack.Screen name="Register" component={Register} />
         <Stack.Screen name="Login" component={Login} />
-        <Stack.Screen name="Dashboard" component={Dashboard} />
-        <Stack.Screen name="UmidadeDoAr" component={UmidadeDoAr} />
-        <Stack.Screen name="UmidadeDoSolo" component={UmidadeDoSolo} />
-        <Stack.Screen name="Temperatura" component={Temperatura} />
+        <Stack.Screen name="Dashboard">
+          {({navigation}) => (
+            <PrivateRoute navigation={navigation}>
+              <Dashboard navigation={navigation} />
+            </PrivateRoute>
+          )}
+        </Stack.Screen>
+        <Stack.Screen name="UmidadeDoAr">
+          {({navigation}) => (
+            <PrivateRoute navigation={navigation}>
+              <UmidadeDoAr navigation={navigation} />
+            </PrivateRoute>
+          )}
+        </Stack.Screen>
+        <Stack.Screen name="UmidadeDoSolo">
+          {({navigation}) => (
+            <PrivateRoute navigation={navigation}>
+              <UmidadeDoSolo navigation={navigation} />
+            </PrivateRoute>
+          )}
+        </Stack.Screen>
+        <Stack.Screen name="Temperatura">
+          {({navigation}) => (
+            <PrivateRoute navigation={navigation}>
+              <Temperatura navigation={navigation} />
+            </PrivateRoute>
+          )}
+        </Stack.Screen>
       </Stack.Navigator>
     </NavigationContainer>
   );
