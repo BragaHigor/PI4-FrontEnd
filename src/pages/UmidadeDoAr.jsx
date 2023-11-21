@@ -226,28 +226,28 @@ export default function UmidadeDoAr() {
         </Block>
 
         <Block flex column space="around">
-          <Dados
+        <Dados
             title="Média"
-            value={300}
-            title2="Modal/Mediana"
+            value={300} // dados de statistics por dia
+            title2="Moda"
             value2={100}
           />
           <Dados
-            title="Desvio Padrão"
+            title="Mediana"
             value={1.8}
-            title2="Assimetria"
+            title2="Desvio Padrão"
             value2={25}
           />
           <Dados
-            title="Curtose"
+            title="Assimetria"
             value={70}
-            title2="Probabilidade"
+            title2="Curtose"
             value2={80}
           />
           <Dados
-            title="Regressão"
+            title="Probabilidade"
             value={15}
-            title2="Inferência estatística"
+            title2="Regressão"
             value2={80}
           />
         </Block>
@@ -274,25 +274,25 @@ export default function UmidadeDoAr() {
         <Dados
             title="Média"
             value={mean}
-            title2="Modal/Mediana"
+            title2="Moda"
             value2={mode}
           />
           <Dados
-            title="Desvio Padrão"
-            value={standardDeviation}
-            title2="Assimetria"
-            value2={skewness}
+            title="Mediana"
+            value={median}
+            title2="Desvio Padrão"
+            value2={standardDeviation}
           />
           <Dados
-            title="Curtose"
-            value={kurtosis}
-            title2="Probabilidade"
-            value2={80}
+            title="Assimetria"
+            value={skewness}
+            title2="Curtose"
+            value2={kurtosis}
           />
           <Dados
-            title="Regressão"
+            title="Probabilidade"
             value={15}
-            title2="Inferência estatística"
+            title2="Regressão"
             value2={80}
           />
         </Block>

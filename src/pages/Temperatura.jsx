@@ -12,20 +12,33 @@ import InteractiveChart from '../components/graficos/InteractiveChart';
 
 export default function Temperatura() {
   const [selectedOption, setSelectedOption] = useState('Dias');
+  // eqp
   const [dataEqp, setDataEqp] = useState(false);
-  const [dataInfos, setDataInfos] = useState(false);
   const [serialNumber, setSerialNumber] = useState('');
+  // infos
   const [infos, setInfos] = useState([]);
+  // hours
   const [perHour, setPerHour] = useState([]);
-  const [perDay, setPerDay] = useState([]);
-  const [arrayTemp, setArrayTemp] = useState();
+  // days
+  const [arrayDias, setArrayDias] = useState([]);
+  // statistic
   const [mean, setMean] = useState(''); 
   const [mode, setMode] = useState(''); 
   const [median, setMedian] = useState(''); 
   const [standardDeviation, setStandardDeviation] = useState(''); 
   const [skewness, setSkewness] = useState(''); 
   const [kurtosis, setKurtosis] = useState('');
+  const [hydrationProbabilityDay, setHydrationProbability] = useState('');
 
+  const [meanHour, setMeanHour] = useState(''); 
+  const [modeHour, setModeHour] = useState(''); 
+  const [medianHour, setMedianHour] = useState(''); 
+  const [standardDeviationHour, setStandardDeviationHour] = useState(''); 
+  const [skewnessHour, setSkewnessHour] = useState(''); 
+  const [kurtosisHour, setKurtosisHour] = useState('');
+  const [hydrationProbabilityHour, setHydrationProbabilityHour] = useState('');
+
+  // dados grafico
   const [dados, setDados] = useState({});
 
   useEffect(() => {
@@ -83,11 +96,40 @@ export default function Temperatura() {
           });
 
           const data = response.data;
-          const lastFiveData = data.slice(0,5);
-          setPerHour(lastFiveData);
-          // console.log(lastFiveData);
           setInfos(data);
-          setDataInfos(true);
+          // console.log("dias",data);
+        }
+        
+      } catch (error) {
+        console.error('Erro ao obter os dados de infos:', error);
+        console.error(
+          'Erro ao obter os dados de infos:',
+          error.response ? error.response.data : error.message,
+        );
+      }
+    };
+
+    fetchInfos();
+  }, [dataEqp]);
+
+  useEffect(() => {
+    const fetchInfosHours = async () => {
+      try {
+        const token = await AsyncStorage.getItem('token_API');
+        // console.log('Dash Token:', token);
+
+        if (token && dataEqp) {
+          const response = await http.get('/infos', {
+            params: {
+              equipmentSerialNumber: serialNumber,
+              filter: 'hours',
+              infosType: 'temperature'
+            }
+          });
+
+          const data = response.data;
+          // console.log("horas", data)
+          setPerHour(data);
           
         }
         
@@ -101,7 +143,83 @@ export default function Temperatura() {
       }
     };
 
-    fetchInfos();
+    fetchInfosHours();
+  }, [dataEqp]);
+
+  useEffect(() => {
+    const fetchStatistics = async () => {
+      try {
+        const token = await AsyncStorage.getItem('token_API');
+        // console.log('Dash Token:', token);
+
+        if (token) {
+          // console.log(infos);
+          const datesSet = new Set(infos.map(item => item.date));
+          const datesArray = Array.from(datesSet);
+          const datesRequestBody = { "dates": datesArray };
+          // console.log(datesRequestBody)
+          const response = await http.post('/infos/statistic', datesRequestBody,  {
+            params: {
+              equipmentSerialNumber: serialNumber,
+              filter: 'day',
+            }
+          });
+          const statistics = response.data;
+          setArrayDias(statistics);
+          console.log(statistics);
+          setMean(statistics[0][5].temperature.mean.toFixed(1));
+          setMode(statistics[0][5].temperature.mode);
+          setMedian(statistics[0][5].temperature.median.toFixed(1));
+          setStandardDeviation(statistics[0][5].temperature.standardDeviation.toFixed(1));
+          setKurtosis(statistics[0][5].temperature.kurtosis.toFixed(1));
+          setSkewness(statistics[0][5].temperature.skewness.toFixed(1));
+          setHydrationProbability(statistics[0][5].hydrationProbability);
+        }
+      } catch (error) {
+        console.error('Erro ao obter os dados de estatistica:', error);
+        console.error(
+          'Erro ao obter os dados de estatistica:',
+          error.response ? error.response.data : error.message,
+        );
+      }
+    };
+
+    fetchStatistics();
+  }, []);
+
+  useEffect(() => {
+    const fetchStatisticsHours = async () => {
+      try {
+        const token = await AsyncStorage.getItem('token_API');
+        // console.log('Dash Token:', token);
+
+        if (token && dataEqp) {
+          const response = await http.post('/infos/statistic', null,  {
+            params: {
+              equipmentSerialNumber: serialNumber,
+              filter: 'hours',
+            }
+          });
+          const statistics = response.data;
+          // console.log(statistics)
+          setMeanHour(statistics[0].temperature.mean.toFixed(1));
+          setModeHour(statistics[0].temperature.mode);
+          setMedianHour(statistics[0].temperature.median.toFixed(1));
+          setStandardDeviationHour(statistics[0].temperature.standardDeviation.toFixed(1));
+          setKurtosisHour(statistics[0].temperature.kurtosis.toFixed(1));
+          setSkewnessHour(statistics[0].temperature.skewness.toFixed(1));
+          setHydrationProbabilityHour(statistics[0].hydrationProbability);
+        }
+      } catch (error) {
+        console.error('Erro ao obter os dados de estatistica:', error);
+        console.error(
+          'Erro ao obter os dados de estatistica:',
+          error.response ? error.response.data : error.message,
+        );
+      }
+    };
+
+    fetchStatisticsHours();
   }, [dataEqp]);
 
   useEffect(() => {
@@ -121,41 +239,6 @@ export default function Temperatura() {
     }
     
   }, [infos]);
-
-  useEffect(() => {
-    const fetchStatistics = async () => {
-      try {
-        const token = await AsyncStorage.getItem('token_API');
-        // console.log('Dash Token:', token);
-
-        if (token && perHour) {
-          const response = await http.post('/infos/statistic', null,  {
-            params: {
-              equipmentSerialNumber: serialNumber,
-              filter: 'hours',
-              infosType: 'temperature',
-            }
-          });
-          const statistics = response.data;
-          console.log(statistics);
-          setMean(statistics[0].temperature.mean);
-          setMode(statistics[0].temperature.mode);
-          setMedian(statistics[0].temperature.median);
-          setStandardDeviation(statistics[0].temperature.standardDeviation.toFixed(1));
-          setKurtosis(statistics[0].temperature.kurtosis.toFixed(1));
-          setSkewness(statistics[0].temperature.skewness.toFixed(1));
-        }
-      } catch (error) {
-        console.error('Erro ao obter os dados de estatistica:', error);
-        console.error(
-          'Erro ao obter os dados de estatistica:',
-          error.response ? error.response.data : error.message,
-        );
-      }
-    };
-
-    fetchStatistics();
-  }, [perHour]);
 
   const dateList = dados[selectedOption]?.x || [];
   const value = dados[selectedOption]?.y || [];
@@ -219,29 +302,27 @@ export default function Temperatura() {
         </Block>
 
         <Block flex column space="around">
-          <Dados
+        <Dados
             title="Média"
-            value={300} // dados de statistics por dia
-            title2="Modal/Mediana"
-            value2={100}
+            value={10}
+            title2="Moda"
+            value2={mode}
           />
           <Dados
-            title="Desvio Padrão"
-            value={1.8}
-            title2="Assimetria"
-            value2={25}
+            title="Mediana"
+            value={median}
+            title2="Desvio Padrão"
+            value2={standardDeviation}
           />
           <Dados
-            title="Curtose"
-            value={70}
-            title2="Probabilidade"
-            value2={80}
+            title="Assimetria"
+            value={skewness}
+            title2="Curtose"
+            value2={kurtosis}
           />
           <Dados
-            title="Regressão"
-            value={15}
-            title2="Inferência estatística"
-            value2={80}
+            title="Probabilidade planta desidratada"
+            value={hydrationProbabilityDay}
           />
         </Block>
       </ScrollView>
@@ -266,27 +347,25 @@ export default function Temperatura() {
         <Block flex column space="around">
         <Dados
             title="Média"
-            value={mean}
-            title2="Modal/Mediana"
-            value2={mode}
+            value={meanHour}
+            title2="Moda"
+            value2={modeHour}
           />
           <Dados
-            title="Desvio Padrão"
-            value={standardDeviation}
-            title2="Assimetria"
-            value2={skewness}
+            title="Mediana"
+            value={medianHour}
+            title2="Desvio Padrão"
+            value2={standardDeviationHour}
           />
           <Dados
-            title="Curtose"
-            value={kurtosis}
-            title2="Probabilidade"
-            value2={80}
+            title="Assimetria"
+            value={skewnessHour}
+            title2="Curtose"
+            value2={kurtosisHour}
           />
           <Dados
-            title="Regressão"
-            value={15}
-            title2="Inferência estatística"
-            value2={80}
+            title="Probabilidade planta desidratada"
+            value={hydrationProbabilityHour}
           />
         </Block>
       </ScrollView>
