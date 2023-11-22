@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import React, {useEffect, useState} from 'react';
 import {ScrollView, StyleSheet, TouchableOpacity} from 'react-native';
 import * as theme from '../styles/theme';
@@ -12,40 +13,41 @@ import InteractiveChart from '../components/graficos/InteractiveChart';
 
 export default function Temperatura() {
   const [selectedOption, setSelectedOption] = useState('Dias');
-  // eqp
+
   const [dataEqp, setDataEqp] = useState(false);
   const [serialNumber, setSerialNumber] = useState('');
-  // infos
+
   const [infos, setInfos] = useState([]);
-  // hours
+
   const [perHour, setPerHour] = useState([]);
-  // days
+
   const [arrayDias, setArrayDias] = useState([]);
-  // statistic
-  const [mean, setMean] = useState(''); 
-  const [mode, setMode] = useState(''); 
-  const [median, setMedian] = useState(''); 
-  const [standardDeviation, setStandardDeviation] = useState(''); 
-  const [skewness, setSkewness] = useState(''); 
+
+  const [mean, setMean] = useState('');
+  const [mode, setMode] = useState('');
+  const [median, setMedian] = useState('');
+  const [standardDeviation, setStandardDeviation] = useState('');
+  const [skewness, setSkewness] = useState('');
   const [kurtosis, setKurtosis] = useState('');
   const [hydrationProbabilityDay, setHydrationProbability] = useState('');
 
-  const [meanHour, setMeanHour] = useState(''); 
-  const [modeHour, setModeHour] = useState(''); 
-  const [medianHour, setMedianHour] = useState(''); 
-  const [standardDeviationHour, setStandardDeviationHour] = useState(''); 
-  const [skewnessHour, setSkewnessHour] = useState(''); 
+  const [meanHour, setMeanHour] = useState('');
+  const [modeHour, setModeHour] = useState('');
+  const [medianHour, setMedianHour] = useState('');
+  const [standardDeviationHour, setStandardDeviationHour] = useState('');
+  const [skewnessHour, setSkewnessHour] = useState('');
   const [kurtosisHour, setKurtosisHour] = useState('');
   const [hydrationProbabilityHour, setHydrationProbabilityHour] = useState('');
 
-  // dados grafico
+
+  const [datesRequestBody, setDatesRequestBody] = useState([]);
+
   const [dados, setDados] = useState({});
 
   useEffect(() => {
     const fetchEquipments = async () => {
       try {
         const token = await AsyncStorage.getItem('token_API');
-        // console.log('Dash Token:', token);
 
         if (token) {
           const serial = await http.get('/equipments');
@@ -70,36 +72,39 @@ export default function Temperatura() {
       try {
         const currentDate = new Date();
 
-        const initDate = currentDate.toLocaleDateString("pt-BR", {
-          timeZone: "America/Sao_Paulo",
+        const initDate = currentDate.toLocaleDateString('pt-BR', {
+          timeZone: 'America/Sao_Paulo',
         });
 
         const finalDate = new Date(currentDate);
         finalDate.setDate(currentDate.getDate() - 4);
 
-        const lastDate = finalDate.toLocaleDateString("pt-BR", {
-          timeZone: "America/Sao_Paulo",
+        const lastDate = finalDate.toLocaleDateString('pt-BR', {
+          timeZone: 'America/Sao_Paulo',
         });
 
         const token = await AsyncStorage.getItem('token_API');
-        // console.log('Dash Token:', token);
 
         if (token && dataEqp) {
           const response = await http.get('/infos', {
             params: {
               equipmentSerialNumber: serialNumber,
-              filter: 'day', // verificar se vai deixar day ou hours aqui
+              filter: 'day',
               initDate: lastDate,
               lastDate: initDate,
-              infosType: 'temperature'
-            }
+              infosType: 'temperature',
+            },
           });
 
           const data = response.data;
           setInfos(data);
-          // console.log("dias",data);
+          const datesSet = new Set(data.map(item => item.date));
+          const datesArray = Array.from(datesSet);
+          setDatesRequestBody(prevDates => {
+            const dates = {dates: datesArray};
+            return { ...prevDates, ...dates };
+          });
         }
-        
       } catch (error) {
         console.error('Erro ao obter os dados de infos:', error);
         console.error(
@@ -110,27 +115,24 @@ export default function Temperatura() {
     };
 
     fetchInfos();
-  }, [dataEqp]);
+  }, [dataEqp, serialNumber]);
 
   useEffect(() => {
     const fetchInfosHours = async () => {
       try {
         const token = await AsyncStorage.getItem('token_API');
-        // console.log('Dash Token:', token);
 
         if (token && dataEqp) {
           const response = await http.get('/infos', {
             params: {
               equipmentSerialNumber: serialNumber,
               filter: 'hours',
-              infosType: 'temperature'
-            }
+              infosType: 'temperature',
+            },
           });
 
           const data = response.data;
-          // console.log("horas", data)
           setPerHour(data);
-          
         }
       } catch (error) {
         console.error('Erro ao obter os dados de infos:', error);
@@ -142,36 +144,39 @@ export default function Temperatura() {
     };
 
     fetchInfosHours();
-  }, [dataEqp]);
+  }, [dataEqp, serialNumber]);
 
   useEffect(() => {
     const fetchStatistics = async () => {
       try {
         const token = await AsyncStorage.getItem('token_API');
-        // console.log('Dash Token:', token);
 
         if (token) {
-          // console.log(infos);
-          const datesSet = new Set(infos.map(item => item.date));
-          const datesArray = Array.from(datesSet);
-          const datesRequestBody = { "dates": datesArray };
-          // console.log(datesRequestBody)
-          const response = await http.post('/infos/statistic', datesRequestBody,  {
-            params: {
-              equipmentSerialNumber: serialNumber,
-              filter: 'day',
-            }
-          });
+          while (datesRequestBody.length <= 0) {
+            await new Promise(resolve => setTimeout(resolve, 5000));
+          }
+          const response = await http.post(
+            '/infos/statistic',
+            datesRequestBody,
+            {
+              params: {
+                equipmentSerialNumber: serialNumber,
+                filter: 'day',
+              },
+            },
+          );
           const statistics = response.data;
+
           setArrayDias(statistics);
-          console.log(statistics);
-          setMean(statistics[0][5].temperature.mean.toFixed(1));
-          setMode(statistics[0][5].temperature.mode);
-          setMedian(statistics[0][5].temperature.median.toFixed(1));
-          setStandardDeviation(statistics[0][5].temperature.standardDeviation.toFixed(1));
-          setKurtosis(statistics[0][5].temperature.kurtosis.toFixed(1));
-          setSkewness(statistics[0][5].temperature.skewness.toFixed(1));
-          setHydrationProbability(statistics[0][5].hydrationProbability);
+          setMean(statistics[5].temperature.mean);
+          setMode(statistics[5].temperature.mode);
+          setMedian(statistics[5].temperature.median);
+          setStandardDeviation(
+            statistics[5].temperature.standardDeviation,
+          );
+          setKurtosis(statistics[5].temperature.kurtosis);
+          setSkewness(statistics[5].temperature.skewness);
+          setHydrationProbability(statistics[5].hydrationProbability);
         }
       } catch (error) {
         console.error('Erro ao obter os dados de estatistica:', error);
@@ -183,29 +188,29 @@ export default function Temperatura() {
     };
 
     fetchStatistics();
-  }, []);
+  }, [dataEqp, datesRequestBody, infos, serialNumber]);
 
   useEffect(() => {
     const fetchStatisticsHours = async () => {
       try {
         const token = await AsyncStorage.getItem('token_API');
-        // console.log('Dash Token:', token);
 
         if (token && dataEqp) {
-          const response = await http.post('/infos/statistic', null,  {
+          const response = await http.post('/infos/statistic', null, {
             params: {
               equipmentSerialNumber: serialNumber,
               filter: 'hours',
-            }
+            },
           });
           const statistics = response.data;
-          // console.log(statistics)
-          setMeanHour(statistics[0].temperature.mean.toFixed(1));
+          setMeanHour(statistics[0].temperature.mean);
           setModeHour(statistics[0].temperature.mode);
-          setMedianHour(statistics[0].temperature.median.toFixed(1));
-          setStandardDeviationHour(statistics[0].temperature.standardDeviation.toFixed(1));
-          setKurtosisHour(statistics[0].temperature.kurtosis.toFixed(1));
-          setSkewnessHour(statistics[0].temperature.skewness.toFixed(1));
+          setMedianHour(statistics[0].temperature.median);
+          setStandardDeviationHour(
+            statistics[0].temperature.standardDeviation,
+          );
+          setKurtosisHour(statistics[0].temperature.kurtosis);
+          setSkewnessHour(statistics[0].temperature.skewness);
           setHydrationProbabilityHour(statistics[0].hydrationProbability);
         }
       } catch (error) {
@@ -218,61 +223,33 @@ export default function Temperatura() {
     };
 
     fetchStatisticsHours();
-  }, [dataEqp]);
+  }, [dataEqp, serialNumber]);
 
   useEffect(() => {
+    const perDay = [];
+    if (arrayDias && arrayDias.length > 0) {
 
-    if (infos){
+      for (let i = 0; i < 5; i++) {
+        const date = arrayDias[i].date;
+        const meanDias = parseFloat(arrayDias[i].temperature.mean);
+        perDay.push({ 'date': date, 'mean': meanDias });
+      }
+
+    }
       const newData = {
         Dias: {
-          x: perHour.map(entry => moment(entry.date, "DD/MM/YYYY").format("DD-MM")), // Substitua 'date' pelo campo da data na sua API
-          y: perHour.map(entry => entry.temperature), // Substitua 'temperature' pelo campo de temperatura na sua API
+          x: perDay.map(entry =>
+            moment(entry.date, 'DD/MM/YYYY').format('DD-MM'),
+          ),
+          y: perDay.map(entry => entry.mean),
         },
         Horas: {
-          x: perHour.map(entry => moment(entry.time, "HH:mm:ss").format("HH")), // Substitua 'date' pelo campo da data na sua API
-          y: perHour.map(entry => entry.temperature), // Substitua 'temperature' pelo campo de temperatura na sua API
+          x: perHour.map(entry => moment(entry.time, 'HH:mm:ss').format('HH')),
+          y: perHour.map(entry => entry.temperature),
         },
       };
       setDados(newData);
-    }
-    
-  }, [infos]);
-
-  // useEffect(() => {
-  //   const fetchStatistics = async () => {
-  //     try {
-  //       const token = await AsyncStorage.getItem('token_API');
-  //       // console.log('Dash Token:', token);
-
-  //       if (token && arrayTemp && arrayTemp.length > 0) {
-
-  //         const requestBody = {
-  //           // Adicione os dados que você precisa enviar no corpo da requisição
-  //           data: arrayTemp
-  //         };
-          
-  //         console.log(requestBody);
-  //         const response = await http.get('/infos/statistic', requestBody);
-  //         const statistics = response.data;
-  //         console.log(statistics);
-  //         // setMean(statistics[0].mean);
-  //         // setMode(statistics[0].mode);
-  //         // setMedian(statistics[0].median);
-  //         // setStandardDeviation(statistics[0].standardDeviation);
-  //         // setKurtosis(statistics[0].kurtosis);
-  //         // setSkewness(statistics[0].skewness);
-  //       }
-  //     } catch (error) {
-  //       console.error('Erro ao obter os dados de estatistica:', error);
-  //       console.error(
-  //         'Erro ao obter os dados de estatistica:',
-  //         error.response ? error.response.data : error.message,
-  //       );
-  //     }
-  //   };
-
-  //   fetchStatistics();
-  // }, [arrayTemp]);
+  }, [arrayDias, perHour]);
 
   const dateList = dados[selectedOption]?.x || [];
   const value = dados[selectedOption]?.y || [];
@@ -336,12 +313,7 @@ export default function Temperatura() {
         </Block>
 
         <Block flex column space="around">
-        <Dados
-            title="Média"
-            value={10}
-            title2="Moda"
-            value2={mode}
-          />
+          <Dados title="Média" value={mean} title2="Moda" value2={mode} />
           <Dados
             title="Mediana"
             value={median}
@@ -379,7 +351,7 @@ export default function Temperatura() {
           <InteractiveChart xValue={dateList} yValue={value} />
         </Block>
         <Block flex column space="around">
-        <Dados
+          <Dados
             title="Média"
             value={meanHour}
             title2="Moda"

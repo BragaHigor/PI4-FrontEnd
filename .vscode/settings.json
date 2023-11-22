@@ -1,2 +1,4 @@
 {
+    "react-native-tools.logLevel": "Info",
+    "react-native-tools.networkInspector.consoleLogsColorTheme": "Dark",
 }

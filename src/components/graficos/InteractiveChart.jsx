@@ -1,14 +1,11 @@
+/* eslint-disable prettier/prettier */
 /* eslint-disable no-shadow */
-/* eslint-disable no-unused-vars */
 /* eslint-disable react/no-unstable-nested-components */
 /* eslint-disable react-native/no-inline-styles */
 import React, {useEffect, useRef, useState} from 'react';
-// import * as React from 'react'
 import {
   PanResponder,
   Dimensions,
-  Text,
-  TouchableOpacity,
   View,
 } from 'react-native';
 import {AreaChart, XAxis, YAxis} from 'react-native-svg-charts';

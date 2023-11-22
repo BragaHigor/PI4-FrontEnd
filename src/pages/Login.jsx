@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 /* eslint-disable no-alert */
 /* eslint-disable react-native/no-inline-styles */
 import {View, Text, TouchableOpacity} from 'react-native';
@@ -25,7 +26,6 @@ export default function Login(props) {
         password: password,
       });
       const token = response.data.token;
-      // console.log(response);
 
       await AsyncStorage.setItem('token_API', token);
       props.navigation.navigate('Dashboard');

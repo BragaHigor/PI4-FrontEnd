@@ -1,4 +1,4 @@
-// Dash.js
+/* eslint-disable prettier/prettier */
 /* eslint-disable react-native/no-inline-styles */
 import React from 'react';
 import {TouchableOpacity} from 'react-native';
@@ -28,17 +28,8 @@ export default function Dash({
   };
 
   if (!Array.isArray(arrayDados) || arrayDados.length === 0) {
-    // Se o arrayDados não estiver pronto, pode retornar algo indicando que os dados estão sendo carregados
-    return <Text>Carregando dados...</Text>; // ou qualquer outro indicador visual
+    return <Text>Carregando dados...</Text>;
   }
-  // console.log('Renderizando Dash com os seguintes dados:');
-  // console.log('Value:', value);
-  // console.log('Unidade:', unidade);
-  // console.log('Array de Dados:', arrayDados);
-  // console.log('Mock:', mock);
-  // console.log('Rota:', rota);
-  // console.log('Nome da Tela:', screenName);
-  // console.log('Parâmetros:', params);
   return (
     <>
       <TouchableOpacity activeOpacity={0.8} onPress={navigateToScreen}>
