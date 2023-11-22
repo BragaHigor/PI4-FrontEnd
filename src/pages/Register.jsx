@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 /* eslint-disable no-alert */
 /* eslint-disable react-native/no-inline-styles */
 import {View, Text, TouchableOpacity} from 'react-native';
@@ -56,13 +57,11 @@ export default function Register(props) {
       console.log('DADOS USUARIO', response);
 
       if (response.status === 201) {
-        // Usuário foi criado com sucesso
         alert('Account created');
         limparInput();
         props.navigation.navigate('Login');
       } else {
-        // Lidar com erros aqui, por exemplo, usuário já existe, problemas de validação, etc.
-        alert('Error: ' + response.data.message); // Exibir a mensagem de erro do servidor
+        alert('Error: ' + response.data.message);
       }
     } catch (error) {
       console.error('Erro ao criar usuário:', error);

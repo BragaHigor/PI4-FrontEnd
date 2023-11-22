@@ -1,4 +1,4 @@
-/* eslint-disable react/no-unstable-nested-components */
+/* eslint-disable prettier/prettier */
 /* eslint-disable react-native/no-inline-styles */
 import React, {useState, useEffect} from 'react';
 import {
@@ -26,7 +26,6 @@ export default function Dashboard(props) {
   const [isModalVisible, setModalVisible] = useState(false);
   const [dataUsers, setDataUsers] = useState(false);
   const [dataEqp, setDataEqp] = useState(false);
-  const [dataInfos, setDataInfos] = useState(false);
   const [nomeCliente, setNomeCliente] = useState('');
   const [serialNumber, setSerialNumber] = useState('');
   const [infos, setInfos] = useState();
@@ -34,21 +33,19 @@ export default function Dashboard(props) {
   const [airMoisture, setAirMoisture] = useState();
   const [soilMoisture, setSoilMoisture] = useState();
 
-  const [arrayTemp, setArrayTemp] = useState(); // temperature
-  const [arrayAir, setArrayAir] = useState(); // airMoisture
-  const [arraySoil, setArraySoil] = useState(); // soilMoisture
+  const [arrayTemp, setArrayTemp] = useState();
+  const [arrayAir, setArrayAir] = useState();
+  const [arraySoil, setArraySoil] = useState();
 
   useEffect(() => {
     const fetchUsers = async () => {
       try {
         const token = await AsyncStorage.getItem('token_API');
-        // console.log('Dash Token:', token);
 
         if (token) {
           const response = await http.get('/users');
 
           const data = response.data;
-          // console.log(data);
           setNomeCliente(data[0].name);
 
           setDataUsers(true);
@@ -69,7 +66,6 @@ export default function Dashboard(props) {
     const fetchEquipments = async () => {
       try {
         const token = await AsyncStorage.getItem('token_API');
-        // console.log('Dash Token:', token);
 
         if (token && dataUsers) {
           const serial = await http.get('/equipments');
@@ -93,8 +89,7 @@ export default function Dashboard(props) {
     const fetchInfos = async () => {
       try {
         const token = await AsyncStorage.getItem('token_API');
-        // console.log('Dash Token:', token);
-        
+
         if (token && dataEqp) {
           const response = await http.get('/infos', {
             params: {
@@ -104,12 +99,10 @@ export default function Dashboard(props) {
           });
 
           const data = response.data;
-          // console.log(data);
           setInfos(data);
           setAirMoisture(data[0].airMoisture);
           setTemperature(data[0].temperature);
           setSoilMoisture(data[0].soilMoisture);
-          setDataInfos(true);
         }
       } catch (error) {
         console.error('Erro ao obter os dados de infos:', error);
@@ -137,9 +130,6 @@ export default function Dashboard(props) {
       });
     }
 
-    // console.log('Temp Array:', tempArray);
-    // console.log('Air Array:', airArray);
-    // console.log('Soil Array:', soilArray);
     setArrayTemp(tempArray);
     setArrayAir(airArray);
     setArraySoil(soilArray);
@@ -155,9 +145,7 @@ export default function Dashboard(props) {
 
   const handleLogout = async () => {
     try {
-      // Remova o token do AsyncStorage
       await AsyncStorage.removeItem('token_API');
-      // Redirecione para a tela de login
       navigation.replace('Login');
     } catch (error) {
       console.error('Erro ao fazer logout:', error);

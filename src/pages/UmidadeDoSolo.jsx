@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import React, {useEffect, useState} from 'react';
 import {ScrollView, StyleSheet, TouchableOpacity} from 'react-native';
 import * as theme from '../styles/theme';
@@ -12,19 +13,33 @@ import InteractiveChart from '../components/graficos/InteractiveChart';
 
 export default function UmidadeDoSolo() {
   const [selectedOption, setSelectedOption] = useState('Dias');
+
   const [dataEqp, setDataEqp] = useState(false);
-  const [dataInfos, setDataInfos] = useState(false);
   const [serialNumber, setSerialNumber] = useState('');
+
   const [infos, setInfos] = useState([]);
+
   const [perHour, setPerHour] = useState([]);
-  const [perDay, setPerDay] = useState([]);
-  const [arraySoil, setArraySoil] = useState();
-  const [mean, setMean] = useState(''); 
-  const [mode, setMode] = useState([]); 
-  const [median, setMedian] = useState(''); 
-  const [standardDeviation, setStandardDeviation] = useState(''); 
-  const [skewness, setSkewness] = useState(''); 
+
+  const [arrayDias, setArrayDias] = useState([]);
+
+  const [mean, setMean] = useState('');
+  const [mode, setMode] = useState('');
+  const [median, setMedian] = useState('');
+  const [standardDeviation, setStandardDeviation] = useState('');
+  const [skewness, setSkewness] = useState('');
   const [kurtosis, setKurtosis] = useState('');
+  const [hydrationProbabilityDay, setHydrationProbability] = useState('');
+
+  const [meanHour, setMeanHour] = useState('');
+  const [modeHour, setModeHour] = useState('');
+  const [medianHour, setMedianHour] = useState('');
+  const [standardDeviationHour, setStandardDeviationHour] = useState('');
+  const [skewnessHour, setSkewnessHour] = useState('');
+  const [kurtosisHour, setKurtosisHour] = useState('');
+  const [hydrationProbabilityHour, setHydrationProbabilityHour] = useState('');
+
+  const [datesRequestBody, setDatesRequestBody] = useState([]);
 
   const [dados, setDados] = useState({});
 
@@ -32,7 +47,6 @@ export default function UmidadeDoSolo() {
     const fetchEquipments = async () => {
       try {
         const token = await AsyncStorage.getItem('token_API');
-        // console.log('Dash Token:', token);
 
         if (token) {
           const serial = await http.get('/equipments');
@@ -57,52 +71,38 @@ export default function UmidadeDoSolo() {
       try {
         const currentDate = new Date();
 
-        const initDate = currentDate.toLocaleDateString("pt-BR", {
-          timeZone: "America/Sao_Paulo",
+        const initDate = currentDate.toLocaleDateString('pt-BR', {
+          timeZone: 'America/Sao_Paulo',
         });
 
         const finalDate = new Date(currentDate);
         finalDate.setDate(currentDate.getDate() - 4);
 
-        const lastDate = finalDate.toLocaleDateString("pt-BR", {
-          timeZone: "America/Sao_Paulo",
+        const lastDate = finalDate.toLocaleDateString('pt-BR', {
+          timeZone: 'America/Sao_Paulo',
         });
 
         const token = await AsyncStorage.getItem('token_API');
-        // console.log('Dash Token:', token);
 
         if (token && dataEqp) {
           const response = await http.get('/infos', {
             params: {
               equipmentSerialNumber: serialNumber,
-              filter: 'day', // verificar se vai deixar day ou hours aqui
+              filter: 'day',
               initDate: lastDate,
               lastDate: initDate,
-              infosType: 'soilMoisture'
-            }
+              infosType: 'soilMoisture',
+            },
           });
-          // console.log(initDate);
-          const data = response.data;
-          // console.log(data);
-          const lastFiveData = data.slice(0,5);
-          setPerHour(lastFiveData);
-          // console.log(lastFiveData);
-          const newData = {
-            Dias: {
-              x: lastFiveData.map(entry => moment(entry.date, "DD/MM/YYYY").format("DD-MM")), // Substitua 'date' pelo campo da data na sua API
-              y: lastFiveData.map(entry => entry.soilMoisture), // Substitua 'soilMoisture' pelo campo de temperatura na sua API
-            },
-            Horas: {
-              x: lastFiveData.map(entry => moment(entry.time, "HH:mm:ss").format("HH")), // Substitua 'date' pelo campo da data na sua API
-              y: lastFiveData.map(entry => entry.soilMoisture), // Substitua 'soilMoisture' pelo campo de temperatura na sua API
-            },
-          };
-          
 
-          setDados(newData);
-          // console.log(dados);
+          const data = response.data;
           setInfos(data);
-          setDataInfos(true);
+          const datesSet = new Set(data.map(item => item.date));
+          const datesArray = Array.from(datesSet);
+          setDatesRequestBody(prevDates => {
+            const dates = {dates: datesArray};
+            return { ...prevDates, ...dates };
+          });
         }
       } catch (error) {
         console.error('Erro ao obter os dados de infos:', error);
@@ -117,52 +117,65 @@ export default function UmidadeDoSolo() {
   }, [dataEqp, serialNumber]);
 
   useEffect(() => {
+    const fetchInfosHours = async () => {
+      try {
+        const token = await AsyncStorage.getItem('token_API');
 
-    if (infos){
-      const newData = {
-        Dias: {
-          x: perHour.map(entry => moment(entry.date, "DD/MM/YYYY").format("DD-MM")), // Substitua 'date' pelo campo da data na sua API
-          y: perHour.map(entry => entry.soilMoisture), // Substitua 'soilMoisture' pelo campo de temperatura na sua API
-        },
-        Horas: {
-          x: perHour.map(entry => moment(entry.time, "HH:mm:ss").format("HH")), // Substitua 'date' pelo campo da data na sua API
-          y: perHour.map(entry => entry.soilMoisture), // Substitua 'soilMoisture' pelo campo de temperatura na sua API
-        },
-      };
-      setDados(newData);
-    }
-    
-  }, [infos]);
+        if (token && dataEqp) {
+          const response = await http.get('/infos', {
+            params: {
+              equipmentSerialNumber: serialNumber,
+              filter: 'hours',
+              infosType: 'soilMoisture',
+            },
+          });
+
+          const data = response.data;
+          setPerHour(data);
+        }
+      } catch (error) {
+        console.error('Erro ao obter os dados de infos:', error);
+        console.error(
+          'Erro ao obter os dados de infos:',
+          error.response ? error.response.data : error.message,
+        );
+      }
+    };
+
+    fetchInfosHours();
+  }, [dataEqp, serialNumber]);
 
   useEffect(() => {
     const fetchStatistics = async () => {
       try {
         const token = await AsyncStorage.getItem('token_API');
-        // console.log('Dash Token:', token);
 
-        if (token && perHour) {
-
-          // const requestBody = {
-          //   // Adicione os dados que você precisa enviar no corpo da requisição
-          //   data: arraySoil
-          // };
-          
-          // console.log(requestBody);
-          const response = await http.post('/infos/statistic', null,  {
-            params: {
-              equipmentSerialNumber: serialNumber,
-              filter: 'hours',
-              infosType: 'soilMoisture',
-            }
-          });
+        if (token) {
+          while (datesRequestBody.length <= 0) {
+            await new Promise(resolve => setTimeout(resolve, 5000));
+          }
+          const response = await http.post(
+            '/infos/statistic',
+            datesRequestBody,
+            {
+              params: {
+                equipmentSerialNumber: serialNumber,
+                filter: 'day',
+              },
+            },
+          );
           const statistics = response.data;
-          console.log(statistics);
-          setMean(statistics[0].soilMoisture.mean);
-          setMode(statistics[0].soilMoisture.mode);
-          setMedian(statistics[0].soilMoisture.median);
-          setStandardDeviation(statistics[0].soilMoisture.standardDeviation.toFixed(1));
-          setKurtosis(statistics[0].soilMoisture.kurtosis.toFixed(1));
-          setSkewness(statistics[0].soilMoisture.skewness.toFixed(1));
+
+          setArrayDias(statistics);
+          setMean(statistics[5].soilMoisture.mean);
+          setMode(statistics[5].soilMoisture.mode);
+          setMedian(statistics[5].soilMoisture.median);
+          setStandardDeviation(
+            statistics[5].soilMoisture.standardDeviation,
+          );
+          setKurtosis(statistics[5].soilMoisture.kurtosis);
+          setSkewness(statistics[5].soilMoisture.skewness);
+          setHydrationProbability(statistics[5].hydrationProbability);
         }
       } catch (error) {
         console.error('Erro ao obter os dados de estatistica:', error);
@@ -174,7 +187,68 @@ export default function UmidadeDoSolo() {
     };
 
     fetchStatistics();
-  }, [perHour]);
+  }, [dataEqp, datesRequestBody, infos, serialNumber]);
+
+  useEffect(() => {
+    const fetchStatisticsHours = async () => {
+      try {
+        const token = await AsyncStorage.getItem('token_API');
+
+        if (token && dataEqp) {
+          const response = await http.post('/infos/statistic', null, {
+            params: {
+              equipmentSerialNumber: serialNumber,
+              filter: 'hours',
+            },
+          });
+          const statistics = response.data;
+          setMeanHour(statistics[0].soilMoisture.mean);
+          setModeHour(statistics[0].soilMoisture.mode);
+          setMedianHour(statistics[0].soilMoisture.median);
+          setStandardDeviationHour(
+            statistics[0].soilMoisture.standardDeviation,
+          );
+          setKurtosisHour(statistics[0].soilMoisture.kurtosis);
+          setSkewnessHour(statistics[0].soilMoisture.skewness);
+          setHydrationProbabilityHour(statistics[0].hydrationProbability);
+        }
+      } catch (error) {
+        console.error('Erro ao obter os dados de estatistica:', error);
+        console.error(
+          'Erro ao obter os dados de estatistica:',
+          error.response ? error.response.data : error.message,
+        );
+      }
+    };
+
+    fetchStatisticsHours();
+  }, [dataEqp, serialNumber]);
+
+  useEffect(() => {
+    const perDay = [];
+    if (arrayDias && arrayDias.length > 0) {
+
+      for (let i = 0; i < 5; i++) {
+        const date = arrayDias[i].date;
+        const meanDias = parseFloat(arrayDias[i].soilMoisture.mean);
+        perDay.push({ 'date': date, 'mean': meanDias });
+      }
+
+    }
+    const newData = {
+      Dias: {
+        x: perDay.map(entry =>
+          moment(entry.date, 'DD/MM/YYYY').format('DD-MM'),
+        ),
+        y: perDay.map(entry => entry.mean),
+      },
+      Horas: {
+        x: perHour.map(entry => moment(entry.time, 'HH:mm:ss').format('HH')),
+        y: perHour.map(entry => entry.soilMoisture),
+      },
+    };
+    setDados(newData);
+  }, [arrayDias, perHour]);
 
   const dateList = dados[selectedOption]?.x || [];
   const value = dados[selectedOption]?.y || [];
@@ -238,29 +312,22 @@ export default function UmidadeDoSolo() {
         </Block>
 
         <Block flex column space="around">
-        <Dados
-            title="Média"
-            value={300} // dados de statistics por dia
-            title2="Moda"
-            value2={100}
-          />
+          <Dados title="Média" value={mean} title2="Moda" value2={mode} />
           <Dados
             title="Mediana"
-            value={1.8}
+            value={median}
             title2="Desvio Padrão"
-            value2={25}
+            value2={standardDeviation}
           />
           <Dados
             title="Assimetria"
-            value={70}
+            value={skewness}
             title2="Curtose"
-            value2={80}
+            value2={kurtosis}
           />
           <Dados
-            title="Probabilidade"
-            value={15}
-            title2="Regressão"
-            value2={80}
+            title="Probabilidade planta desidratada"
+            value={hydrationProbabilityDay}
           />
         </Block>
       </ScrollView>
@@ -285,27 +352,25 @@ export default function UmidadeDoSolo() {
         <Block flex column space="around">
           <Dados
             title="Média"
-            value={mean}
+            value={meanHour}
             title2="Moda"
-            value2={mode}
+            value2={modeHour}
           />
           <Dados
             title="Mediana"
-            value={median}
+            value={medianHour}
             title2="Desvio Padrão"
-            value2={standardDeviation}
+            value2={standardDeviationHour}
           />
           <Dados
             title="Assimetria"
-            value={skewness}
+            value={skewnessHour}
             title2="Curtose"
-            value2={kurtosis}
+            value2={kurtosisHour}
           />
           <Dados
-            title="Probabilidade"
-            value={15}
-            title2="Regressão"
-            value2={80}
+            title="Probabilidade planta desidratada"
+            value={hydrationProbabilityHour}
           />
         </Block>
       </ScrollView>

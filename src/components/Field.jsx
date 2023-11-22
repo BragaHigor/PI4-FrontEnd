@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 /* eslint-disable react-native/no-inline-styles */
 import React from 'react';
 import {TextInput} from 'react-native';
@@ -16,7 +17,7 @@ export default function Field({value, ...props}) {
         marginVertical: 10,
       }}
       placeholderTextColor={darkGreen}
-      value={value} // Certifique-se de passar o valor corretamente aqui
+      value={value}
     />
   );
 }
