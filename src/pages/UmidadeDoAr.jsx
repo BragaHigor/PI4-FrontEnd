@@ -328,8 +328,8 @@ export default function UmidadeDoAr() {
             value2={kurtosis}
           />
           <Dados
-            title="Probabilidade planta desidratada"
-            value={hydrationProbabilityDay}
+            title="Probabilidade planta hidratada"
+            value={hydrationProbabilityDay + ' %'}
           />
         </Block>
       </ScrollView>
@@ -371,8 +371,8 @@ export default function UmidadeDoAr() {
             value2={kurtosisHour}
           />
           <Dados
-            title="Probabilidade planta desidratada"
-            value={hydrationProbabilityHour}
+            title="Probabilidade planta hidratada"
+            value={hydrationProbabilityHour + ' %'}
           />
         </Block>
       </ScrollView>
