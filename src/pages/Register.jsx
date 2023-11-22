@@ -48,6 +48,7 @@ export default function Register(props) {
         name: `${firstName}`,
         email,
         password,
+        // serialNumber: serial,
       };
 
       const response = await http.post('/users', newUser);
@@ -56,7 +57,7 @@ export default function Register(props) {
 
       if (response.status === 201) {
         // Usuário foi criado com sucesso
-        alert('Account created');
+        alert('Conta criada com sucesso');
         limparInput();
         props.navigation.navigate('Login');
       } else {
@@ -79,7 +80,7 @@ export default function Register(props) {
             fontWeight: 'bold',
             marginTop: 20,
           }}>
-          Register
+          Cadastro
         </Text>
         <Text
           style={{
@@ -88,7 +89,7 @@ export default function Register(props) {
             fontWeight: 'bold',
             marginBottom: 20,
           }}>
-          Create a new account
+          Crei a sua conta
         </Text>
         <View
           style={{
@@ -100,12 +101,12 @@ export default function Register(props) {
             alignItems: 'center',
           }}>
           <Field
-            placeholder="First Name"
+            placeholder="Nome"
             value={firstName}
             onChangeText={text => setFirstName(text)}
           />
           <Field
-            placeholder="Last Name"
+            placeholder="Sobrenome"
             value={lastName}
             onChangeText={text => setLastName(text)}
           />
@@ -120,13 +121,13 @@ export default function Register(props) {
             onChangeText={text => setEmail(text)}
           />
           <Field
-            placeholder="Password"
+            placeholder="Senha"
             value={password}
             secureTextEntry={true}
             onChangeText={text => setPassword(text)}
           />
           <Field
-            placeholder="Confirm Password"
+            placeholder="Confirme sua Senha"
             value={confirmPassword}
             secureTextEntry={true}
             onChangeText={text => setConfirmPassword(text)}
@@ -134,7 +135,7 @@ export default function Register(props) {
           <Btn
             textColor="white"
             bgColor={darkGreen}
-            btnLabel="Signup"
+            btnLabel="Cadastrar"
             Press={() => {
               handleSignup();
             }}
@@ -146,13 +147,13 @@ export default function Register(props) {
               justifyContent: 'center',
             }}>
             <Text style={{fontWeight: 'bold', fontSize: 16}}>
-              Already have an account ?{' '}
+              Já possuí uma conta ?{' '}
             </Text>
             <TouchableOpacity
               onPress={() => props.navigation.navigate('Login')}>
               <Text
                 style={{color: darkGreen, fontWeight: 'bold', fontSize: 16}}>
-                Login
+                Entrar
               </Text>
             </TouchableOpacity>
           </View>
