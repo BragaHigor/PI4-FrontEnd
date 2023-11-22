@@ -37,6 +37,19 @@ export default function Dashboard(props) {
   const [arrayAir, setArrayAir] = useState();
   const [arraySoil, setArraySoil] = useState();
 
+  const [email, setEmail] = useState('');
+  const [address, setAddress] = useState({
+    street: '',
+    number: '',
+    complement: '',
+    neighborhood: '',
+    city: '',
+    state: '',
+    cep: '',
+  });
+
+  const [saveButton, setSaveButton] = useState(false);
+
   useEffect(() => {
     const fetchUsers = async () => {
       try {
@@ -93,7 +106,7 @@ export default function Dashboard(props) {
         if (token && dataEqp) {
           const response = await http.get('/infos', {
             params: {
-              equipmentSerialNumber: '24:0A:C4:00:01:10',
+              equipmentSerialNumber: serialNumber,
               filter: 'hours',
             },
           });
@@ -152,50 +165,101 @@ export default function Dashboard(props) {
     }
   };
 
-  function EditInfo() {
-    return (
-      <>
-        <Modal
-          transparent={true}
-          visible={isModalVisible}
-          animationType="slide"
-          onRequestClose={closeModal}>
-          <View
-            style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-            <View
-              style={{
-                backgroundColor: 'white',
-                padding: 20,
-                borderRadius: 30,
-                width: 300,
-              }}>
-              <View
-                style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-                <Text name>Editar Informações</Text>
-                <TouchableOpacity onPress={closeModal}>
-                  <Image source={Close} style={{width: 24, height: 24}} />
-                </TouchableOpacity>
-              </View>
+  const handleInputChange = (fieldName, value) => {
+    setAddress({ ...address, [fieldName]: value });
+  };
 
-              <Field placeholder="Nome" />
-              <Field placeholder="E-mail" />
-              <Field placeholder="Senha" />
-              <Field placeholder="Telefone" />
-              <Button
-                title="Salvar"
-                onPress={closeModal}
-                color={theme.colors.accent}
-              />
+  // eslint-disable-next-line react/no-unstable-nested-components
+  function EditInfo({ save }) {
+
+    useEffect(() => {
+      const fetchPutUser = async () => {
+        try {
+          const response = await http.put('/users', {
+            user: { email: email, address: address },
+          });
+
+          console.log('Dados atualizados com sucesso', response.data);
+          closeModal();
+        } catch (error) {
+          console.error('Erro ao atualizar dados', error);
+        }
+        setSaveButton(false);
+      };
+      if (save) {
+        fetchPutUser();
+      }
+    }, [save]);
+
+    return (
+      <Modal
+        transparent={true}
+        visible={isModalVisible}
+        animationType="slide"
+        onRequestClose={closeModal}>
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+          <View
+            style={{
+              backgroundColor: 'white',
+              padding: 20,
+              borderRadius: 30,
+              width: 300,
+            }}>
+            <View
+              style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+              <Text name>Editar Informações</Text>
+              <TouchableOpacity onPress={closeModal}>
+                <Image source={Close} style={{width: 24, height: 24}} />
+              </TouchableOpacity>
             </View>
+            <Field
+              placeholder="Email"
+              value={email}
+              onChange={(text) => setEmail(text)}
+            />
+            <Field
+              placeholder="Rua"
+              value={address.street}
+              onChangeText={(text) => handleInputChange('street', text)}
+            />
+            <Field
+              placeholder="Numero"
+              value={address.number}
+              onChangeText={(text) => handleInputChange('number', text)}
+            />
+            <Field
+              placeholder="Bairro"
+              value={address.neighborhood}
+              onChangeText={(text) => handleInputChange('neighborhood', text)}
+            />
+            <Field
+              placeholder="Cidade"
+              value={address.city}
+              onChangeText={(text) => handleInputChange('city', text)}
+            />
+            <Field
+              placeholder="Estado"
+              value={address.state}
+              onChangeText={(text) => handleInputChange('state', text)}
+            />
+            <Field
+              placeholder="CEP"
+              value={address.cep}
+              onChangeText={(text) => handleInputChange('cep', text)}
+            />
+            <Button
+              title="Salvar"
+              onPress={() => setSaveButton(true)}
+              color={theme.colors.accent}
+            />
           </View>
-        </Modal>
-      </>
+        </View>
+      </Modal>
     );
   }
-
   return (
     <>
-      {EditInfo()}
+      <EditInfo save={saveButton}/>
       <ScrollView contentContainerStyle={styles.dashboard}>
         <Block>
           <Block row space="around">
