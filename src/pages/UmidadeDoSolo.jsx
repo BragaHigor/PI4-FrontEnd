@@ -5,6 +5,9 @@ import * as theme from '../styles/theme';
 import {Block, Text} from '../components';
 import mocks from '../interface/settings';
 import Dados from '../components/Estatistica';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import http from '../db/http';
+import moment from 'moment';
 
 import InteractiveChart from '../components/graficos/InteractiveChart';
 
@@ -305,7 +308,7 @@ export default function UmidadeDoSolo() {
             </Block>
             {selectDia()}
           </Block>
-          <InteractiveChart xValue={dateList} yValue={priceList} />
+          <InteractiveChart xValue={dateList} yValue={value} />
         </Block>
 
         <Block flex column space="around">
@@ -344,7 +347,7 @@ export default function UmidadeDoSolo() {
             </Block>
             {selectHora()}
           </Block>
-          <InteractiveChart xValue={dateList} yValue={priceList} />
+          <InteractiveChart xValue={dateList} yValue={value} />
         </Block>
         <Block flex column space="around">
           <Dados
