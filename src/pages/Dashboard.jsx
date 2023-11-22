@@ -33,6 +33,10 @@ export default function Dashboard(props) {
   const [airMoisture, setAirMoisture] = useState();
   const [soilMoisture, setSoilMoisture] = useState();
 
+  const [nome, setNome] = useState('');
+  const [email, setEmail] = useState('');
+  const [saveButton, setSaveButton] = useState(false);
+
   const [arrayTemp, setArrayTemp] = useState();
   const [arrayAir, setArrayAir] = useState();
   const [arraySoil, setArraySoil] = useState();
@@ -71,6 +75,7 @@ export default function Dashboard(props) {
           const serial = await http.get('/equipments');
           const serialData = serial.data;
           setSerialNumber(serialData[0].serialNumber);
+          console.log('serial', serialNumber);
           setDataEqp(true);
         }
       } catch (error) {
@@ -83,7 +88,7 @@ export default function Dashboard(props) {
     };
 
     fetchEquipments();
-  }, [dataUsers]);
+  }, [dataUsers, serialNumber]);
 
   useEffect(() => {
     const fetchInfos = async () => {
@@ -93,7 +98,7 @@ export default function Dashboard(props) {
         if (token && dataEqp) {
           const response = await http.get('/infos', {
             params: {
-              equipmentSerialNumber: '24:0A:C4:00:01:10',
+              equipmentSerialNumber: serialNumber,
               filter: 'hours',
             },
           });
@@ -152,7 +157,26 @@ export default function Dashboard(props) {
     }
   };
 
-  function EditInfo() {
+  function EditInfo({save}) {
+    useEffect(() => {
+      const fetchPutUser = async () => {
+        try {
+          const response = await http.put('/users', {
+            user: {name: `${nome}`, email: email},
+          });
+
+          console.log('Dados atualizados com sucesso', response.data);
+          closeModal();
+        } catch (error) {
+          console.error('Erro ao atualizar dados', error);
+        }
+        setSaveButton(false);
+      };
+      if (save) {
+        fetchPutUser();
+      }
+    }, [save]);
+
     return (
       <>
         <Modal
@@ -177,13 +201,19 @@ export default function Dashboard(props) {
                 </TouchableOpacity>
               </View>
 
-              <Field placeholder="Nome" />
-              <Field placeholder="E-mail" />
-              <Field placeholder="Senha" />
-              <Field placeholder="Telefone" />
+              <Field
+                placeholder="Nome"
+                value={nome}
+                onChangeText={text => setNome(text)}
+              />
+              <Field
+                placeholder="Email"
+                value={email}
+                onChangeText={text => setEmail(text)}
+              />
               <Button
                 title="Salvar"
-                onPress={closeModal}
+                onPress={() => setSaveButton(true)}
                 color={theme.colors.accent}
               />
             </View>
@@ -195,13 +225,14 @@ export default function Dashboard(props) {
 
   return (
     <>
-      {EditInfo()}
+      <EditInfo save={saveButton} />
       <ScrollView contentContainerStyle={styles.dashboard}>
         <Block>
           <Block row space="around">
             <Block>
-              <Text welcome>Bem-Vindo</Text>
+              <Text welcome>Bem-Vindo(a)</Text>
               <Text name>{nomeCliente}</Text>
+              <Text name>{serialNumber}</Text>
             </Block>
             <View style={styles.statistics}>
               <TouchableOpacity activeOpacity={0.8} onPress={openModal}>

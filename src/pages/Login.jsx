@@ -69,7 +69,7 @@ export default function Login(props) {
               color: darkGreen,
               fontWeight: 'bold',
             }}>
-            Bem Vindo,
+            Bem-Vindo,
           </Text>
           <Text
             style={{
@@ -82,13 +82,13 @@ export default function Login(props) {
           </Text>
           <Field
             placeholder="Email"
-            value={email}
+            // value={email}
             onChangeText={text => setEmail(text)}
           />
           <Field
             placeholder="Senha"
             secureTextEntry={true}
-            value={password}
+            // value={password}
             onChangeText={text => setPassword(text)}
           />
           <View

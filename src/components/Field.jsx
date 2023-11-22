@@ -4,7 +4,7 @@ import React from 'react';
 import {TextInput} from 'react-native';
 import {darkGreen} from '../styles/Constants';
 
-export default function Field({value, ...props}) {
+export default function Field({value, onChangeText, ...props}) {
   return (
     <TextInput
       {...props}
@@ -18,6 +18,7 @@ export default function Field({value, ...props}) {
       }}
       placeholderTextColor={darkGreen}
       value={value}
+      onChangeText={onChangeText}
     />
   );
 }
