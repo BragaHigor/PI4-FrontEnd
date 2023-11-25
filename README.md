@@ -14,7 +14,7 @@ Este repositório contém o código-fonte de um aplicativo móvel desenvolvido e
 Clone este repositório em sua máquina local:
 
 ```bash
-  git clone https://github.com/seu-usuario/nome-do-repositorio.git
+  git clone https://github.com/BragaHigor/PI4-FrontEnd.git
 ```
 Navegue até o diretório do projeto:    
 ```bash
