@@ -1,79 +1,52 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+# SoloSmart - Mobile App
+Este repositório contém o código-fonte de um aplicativo móvel desenvolvido em React Native para monitorar as condições de uma horta, exibindo estatísticas detalhadas de umidade do solo, umidade do ar e temperatura. Os dados são coletados por sensores DHT22 conectados a uma placa ESP32, e as informações são armazenadas em um servidor Node.js com Express e MongoDB. A autenticação de usuários é realizada por meio de tokens, permitindo o acesso seguro às informações dos sensores.
 
-# Getting Started
 
->**Note**: Make sure you have completed the [React Native - Environment Setup](https://reactnative.dev/docs/environment-setup) instructions till "Creating a new application" step, before proceeding.
+## Stack utilizada
 
-## Step 1: Start the Metro Server
+**Front-end:** React, CSS
 
-First, you will need to start **Metro**, the JavaScript _bundler_ that ships _with_ React Native.
+**Back-end:** Node, Express
 
-To start Metro, run the following command from the _root_ of your React Native project:
 
-```bash
-# using npm
-npm start
+## Instalação
 
-# OR using Yarn
-yarn start
-```
-
-## Step 2: Start your Application
-
-Let Metro Bundler run in its _own_ terminal. Open a _new_ terminal from the _root_ of your React Native project. Run the following command to start your _Android_ or _iOS_ app:
-
-### For Android
+Clone este repositório em sua máquina local:
 
 ```bash
-# using npm
-npm run android
-
-# OR using Yarn
-yarn android
+  git clone https://github.com/seu-usuario/nome-do-repositorio.git
 ```
-
-### For iOS
-
+Navegue até o diretório do projeto:    
 ```bash
-# using npm
-npm run ios
-
-# OR using Yarn
-yarn ios
+  cd nome-do-repositorio
+```
+Instale as dependências do projeto:   
+```bash
+  npm install
+```
+Inicie o aplicativo:  
+```bash
+  npx react-native run-android
 ```
 
-If everything is set up _correctly_, you should see your new app running in your _Android Emulator_ or _iOS Simulator_ shortly provided you have set up your emulator/simulator correctly.
+## Funcionalidades
 
-This is one way to run your app — you can also run it directly from within Android Studio and Xcode respectively.
+- Autenticação de Usuários: Os usuários podem se autenticar no aplicativo usando tokens.
 
-## Step 3: Modifying your App
+- **Visualização de Dados:** O aplicativo exibe gráficos interativos usando a biblioteca React-Native SVG Charts para mostrar as condições de umidade do solo, umidade do ar e temperatura ao longo de dias e horas.
 
-Now that you have successfully run the app, let's modify it.
+- **Estatísticas Avançadas:** Além dos gráficos, o aplicativo também calcula e exibe estatísticas avançadas para cada sensor, incluindo média, moda, mediana, curtose, assimetria, desvio padrão e probabilidade de planta hidratada.
 
-1. Open `App.tsx` in your text editor of choice and edit some lines.
-2. For **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Developer Menu** (<kbd>Ctrl</kbd> + <kbd>M</kbd> (on Window and Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (on macOS)) to see your changes!
 
-   For **iOS**: Hit <kbd>Cmd ⌘</kbd> + <kbd>R</kbd> in your iOS Simulator to reload the app and see your changes!
+## Contribuindo
 
-## Congratulations! :tada:
+Sinta-se à vontade para contribuir para o desenvolvimento deste projeto. Faça um fork do repositório, faça suas alterações e envie um pull request.
 
-You've successfully run and modified your React Native App. :partying_face:
 
-### Now what?
+## Autores
 
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [Introduction to React Native](https://reactnative.dev/docs/getting-started).
-
-# Troubleshooting
-
-If you can't get this to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
-
-# Learn More
-
-To learn more about React Native, take a look at the following resources:
-
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
+- [@PedroNevesHespanhol](https://www.github.com/PedroNevesHespanhol)
+- [@VanderleiJunior](https://www.github.com/VanderleiJunior)
+- [@BragaHigor](https://www.github.com/BragaHigor)
+- [@cassiotakarada](https://www.github.com/cassiotakarada)
+- [@BrenoTNK](https://www.github.com/BrenoTNK)
