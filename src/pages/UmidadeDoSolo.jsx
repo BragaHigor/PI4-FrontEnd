@@ -10,6 +10,7 @@ import http from '../db/http';
 import moment from 'moment';
 
 import InteractiveChart from '../components/graficos/InteractiveChart';
+import Probabilidade from '../components/Probabilidade';
 
 export default function UmidadeDoSolo() {
   const [selectedOption, setSelectedOption] = useState('Dias');
@@ -325,11 +326,11 @@ export default function UmidadeDoSolo() {
             title2="Curtose"
             value2={kurtosis}
           />
-          <Dados
+        </Block>
+          <Probabilidade
             title="Probabilidade planta hidratada"
             value={hydrationProbabilityDay + ' %'}
           />
-        </Block>
       </ScrollView>
     );
   }
@@ -368,11 +369,11 @@ export default function UmidadeDoSolo() {
             title2="Curtose"
             value2={kurtosisHour}
           />
-          <Dados
+        </Block>
+          <Probabilidade
             title="Probabilidade planta hidratada"
             value={hydrationProbabilityHour + ' %'}
           />
-        </Block>
       </ScrollView>
     );
   }
